@@ -1,0 +1,6 @@
+Step (k),Added Feature,Selected Features,Train 5-Fold CV RMSE,Test RMSE,Test R-squared
+1,R&D Spend,R&D Spend,9745.4008,8274.868,0.9465
+2,Marketing Spend,"R&D Spend, Marketing Spend",9482.344,8198.7972,0.9474
+3,Administration,"R&D Spend, Marketing Spend, Administration",9678.076,8803.7758,0.9394
+4,State_Florida,"R&D Spend, Marketing Spend, Administration, State_Florida",9885.5622,9068.5412,0.9357
+5,State_New York,"R&D Spend, Marketing Spend, Administration, State_Florida, State_New York",10158.6608,9137.9902,0.9347

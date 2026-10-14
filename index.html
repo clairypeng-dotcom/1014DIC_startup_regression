@@ -73,6 +73,21 @@
               <span>Test RMSE = $5,780.20</span>
             </div>
           </div>
+
+          <div class="dropdown-option" data-dataset="custom" role="option" tabindex="0">
+            <div class="opt-head">
+              <div class="opt-title-group">
+                <span class="opt-icon">⚡</span>
+                <span class="opt-name">Problem 3: Custom Dataset (任意自訂資料集)</span>
+              </div>
+              <span class="badge badge-accent">Auto-ML</span>
+            </div>
+            <p class="opt-desc">Input any CSV URL (e.g. 50_Startups.csv) or upload file. Automatically runs OLS regression, 5-fold CV forward selection & live simulator.</p>
+            <div class="opt-meta">
+              <span>Arbitrary CSV Input</span>
+              <span>Dynamic Auto-ML</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -127,6 +142,16 @@
                 <span class="badge badge-accent">k=12</span>
               </div>
               <p class="opt-desc">Hedonic real estate valuation across 506 Boston census tracts ($N=506$).</p>
+            </div>
+            <div class="dropdown-option" data-dataset="custom" role="option" tabindex="0">
+              <div class="opt-head">
+                <div class="opt-title-group">
+                  <span class="opt-icon">⚡</span>
+                  <span class="opt-name">Problem 3: Custom Dataset (任意自訂資料集)</span>
+                </div>
+                <span class="badge badge-accent">Auto-ML</span>
+              </div>
+              <p class="opt-desc">Input any CSV dataset URL or upload file. Runs automatic regression pipeline & interactive simulator.</p>
             </div>
           </div>
         </div>
@@ -191,6 +216,66 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
             Inspect Scatter Plot
           </a>
+        </div>
+      </div>
+
+      <!-- Custom Dataset Hero Content -->
+      <div class="hero-content dataset-content hidden-dataset" data-dataset="custom">
+        <div class="hero-badges">
+          <span class="pill pill-cyan">Arbitrary CSV Input</span>
+          <span class="pill pill-purple">Auto-One-Hot Encoding</span>
+          <span class="pill pill-green" id="customHeroBadgeR2">Optimal Test R² = 0.9474</span>
+          <span class="pill pill-amber" id="customHeroBadgeCv">5-Fold CV Forward Selection</span>
+        </div>
+        <h1 class="hero-title">
+          Multiple Linear Regression & Forward Selection
+          <span class="gradient-text">Arbitrary Custom Dataset</span>
+        </h1>
+        <p class="hero-subtitle">
+          Input any tabular CSV URL (such as <code>https://raw.githubusercontent.com/Avik-Jain/100-Days-Of-ML-Code/master/datasets/50_Startups.csv</code>) or upload a local file. The browser Auto-ML engine automatically runs the full <strong>CRISP-DM</strong> pipeline: OLS regression, forward feature selection, and dynamic live prediction simulation.
+        </p>
+
+        <!-- Custom Dataset Loader Card -->
+        <div class="custom-loader-card">
+          <div class="custom-loader-header">
+            <h3>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              Input Dataset URL / Upload CSV
+            </h3>
+            <span class="status-badge-inline" id="customStatusBadge">● Pipeline Ready</span>
+          </div>
+
+          <div class="preset-url-chips">
+            <span class="preset-chip-label">Quick Presets:</span>
+            <button class="preset-chip-btn" data-url="https://raw.githubusercontent.com/Avik-Jain/100-Days-Of-ML-Code/master/datasets/50_Startups.csv">🚀 50 Startups (Avik Jain)</button>
+            <button class="preset-chip-btn" data-url="https://raw.githubusercontent.com/selva86/datasets/master/BostonHousing.csv">🏡 Boston Housing</button>
+            <button class="preset-chip-btn" data-url="https://raw.githubusercontent.com/selva86/datasets/master/Advertising.csv">📺 Advertising & Sales</button>
+          </div>
+
+          <div class="custom-input-row">
+            <input type="url" id="customDatasetUrl" class="custom-url-input" placeholder="Enter raw CSV dataset URL..." value="https://raw.githubusercontent.com/Avik-Jain/100-Days-Of-ML-Code/master/datasets/50_Startups.csv">
+            <button class="btn btn-primary" id="btnRunCustomPipeline">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              Load & Run Pipeline
+            </button>
+            <button class="btn btn-secondary" id="btnUploadCsvTrigger" type="button" title="Upload local CSV file">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              Upload CSV
+            </button>
+            <input type="file" id="customCsvFileInput" class="hidden-file-input" accept=".csv">
+          </div>
+
+          <div class="custom-options-bar">
+            <div class="custom-target-group">
+              <label for="customTargetSelect">Target Variable ($y$):</label>
+              <select id="customTargetSelect" class="custom-target-select">
+                <option value="Profit" selected>Profit (Auto-selected)</option>
+              </select>
+            </div>
+            <div style="font-size:0.82rem; color:var(--text-muted);" id="customSummaryMini">
+              Loaded: 50 Startups (50 rows, 5 columns)
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -291,6 +376,55 @@
               <div class="kpi-value text-amber">Building Age (AGE)</div>
               <div class="kpi-detail">
                 Adding Step 13 (AGE) increases CV RMSE from <strong>$4,614</strong> to <strong>$4,649</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Custom Dataset KPIs -->
+        <div class="dataset-content hidden-dataset" data-dataset="custom">
+          <div class="kpi-grid">
+            <div class="kpi-card highlight-card">
+              <div class="kpi-icon icon-green">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+              </div>
+              <div class="kpi-label">Optimal Model Test R²</div>
+              <div class="kpi-value text-green" id="customKpiR2">0.9474</div>
+              <div class="kpi-detail" id="customKpiR2Detail">
+                <span class="trend-badge positive">★ Optimal</span> Best subset out-of-sample fit
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-icon icon-cyan">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+              </div>
+              <div class="kpi-label">Optimal Test RMSE</div>
+              <div class="kpi-value" id="customKpiRmse">$8,198.80</div>
+              <div class="kpi-detail" id="customKpiRmseDetail">
+                Minimum out-of-sample prediction error
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-icon icon-purple">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              </div>
+              <div class="kpi-label">Primary Significant Driver</div>
+              <div class="kpi-value" id="customKpiDriver">R&D Spend (+0.7735)</div>
+              <div class="kpi-detail" id="customKpiDriverDetail">
+                Highest standardized regression coefficient
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-icon icon-amber">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+              </div>
+              <div class="kpi-label">Occam's Razor Selection</div>
+              <div class="kpi-value text-amber" id="customKpiOccam">k = 2 Features</div>
+              <div class="kpi-detail" id="customKpiOccamDetail">
+                Optimal 5-fold CV on training set
               </div>
             </div>
           </div>
@@ -764,6 +898,227 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
             </div>
           </div>
         </div>
+
+        <!-- Custom Dataset CRISP-DM Lifecycle -->
+        <div class="dataset-content hidden-dataset" data-dataset="custom">
+          <div class="phase-nav-tabs" role="tablist" id="phaseTabContainer_custom">
+            <button class="phase-tab active" data-phase="1">
+              <span class="tab-num">01</span>
+              <span class="tab-name">Problem Understanding</span>
+            </button>
+            <button class="phase-tab" data-phase="2">
+              <span class="tab-num">02</span>
+              <span class="tab-name">Data Understanding</span>
+            </button>
+            <button class="phase-tab" data-phase="3">
+              <span class="tab-num">03</span>
+              <span class="tab-name">Data Preparation</span>
+            </button>
+            <button class="phase-tab" data-phase="4">
+              <span class="tab-num">04</span>
+              <span class="tab-name">Modeling</span>
+            </button>
+            <button class="phase-tab" data-phase="5">
+              <span class="tab-num">05</span>
+              <span class="tab-name">Evaluation</span>
+            </button>
+            <button class="phase-tab" data-phase="6">
+              <span class="tab-num">06</span>
+              <span class="tab-name">Deployment</span>
+            </button>
+          </div>
+
+          <div class="phase-panels-wrapper">
+            <!-- Phase 1: Custom -->
+            <div class="phase-panel active" id="panelPhase1_custom">
+              <div class="panel-grid">
+                <div class="panel-main">
+                  <h3 class="panel-title" id="customPhase1Title">Phase 1: Problem Understanding (Custom Dataset)</h3>
+                  <p class="panel-lead" id="customPhase1Lead">
+                    Automated regression modeling for arbitrary user-specified tabular dataset.
+                  </p>
+                  <div class="card-feature-list">
+                    <div class="feature-item">
+                      <div class="feature-bullet">1</div>
+                      <div>
+                        <strong>Universal Target Regression</strong>
+                        <p>Automatically isolates the continuous target variable and maps all candidate numerical and categorical features.</p>
+                      </div>
+                    </div>
+                    <div class="feature-item">
+                      <div class="feature-bullet">2</div>
+                      <div>
+                        <strong>Zero-Test-Leakage 5-Fold Cross Validation</strong>
+                        <p>Runs rigorous k-fold cross-validation exclusively on the training partition to select the most parsimonious feature subset.</p>
+                      </div>
+                    </div>
+                    <div class="feature-item">
+                      <div class="feature-bullet">3</div>
+                      <div>
+                        <strong>Real-time Interactive Deployment</strong>
+                        <p>Generates an instant client-side prediction engine and interactive sliders based on the trained scikit-learn compatible coefficients.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="panel-sidebar">
+                  <div class="sidebar-box">
+                    <h4>Target Variable</h4>
+                    <div class="metric-pill" id="customTargetBadge">Profit</div>
+                    <h4>Dataset Source</h4>
+                    <p style="font-size:0.8rem; word-break:break-all; font-family:var(--font-mono); color:var(--text-secondary);" id="customSourceDisplay">
+                      50_Startups.csv
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Phase 2: Custom -->
+            <div class="phase-panel" id="panelPhase2_custom">
+              <div class="panel-grid">
+                <div class="panel-main">
+                  <h3 class="panel-title">Phase 2: Data Understanding (Custom Dataset)</h3>
+                  <p class="panel-lead" id="customEdaLead">Inspecting loaded dataset structure, types, and summary statistics.</p>
+                  <div class="table-responsive">
+                    <table class="data-table" id="customEdaTable">
+                      <thead>
+                        <tr><th>Column</th><th>Detected Type</th><th>Mean</th><th>Std Dev</th><th>Min</th><th>Max</th></tr>
+                      </thead>
+                      <tbody id="customEdaTableBody">
+                        <!-- Populated dynamically via app.js -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="panel-sidebar">
+                  <div class="sidebar-box">
+                    <h4>Data Hygiene Summary</h4>
+                    <div class="checklist" id="customDataHygieneChecklist">
+                      <div class="check-item"><span class="check-icon">✓</span> Total Rows: <strong id="customTotalRows">50</strong></div>
+                      <div class="check-item"><span class="check-icon">✓</span> Columns: <strong id="customTotalCols">5</strong></div>
+                      <div class="check-item"><span class="check-icon">✓</span> Missing entries handled: 0 dropped</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Phase 3: Custom -->
+            <div class="phase-panel" id="panelPhase3_custom">
+              <div class="panel-grid">
+                <div class="panel-main">
+                  <h3 class="panel-title">Phase 3: Data Preparation (Custom Dataset)</h3>
+                  <p class="panel-lead" id="customPrepLead">Automated One-Hot Encoding (drop_first=True) and strict 80/20 train/test split.</p>
+                  <div class="code-explain-box">
+                    <div class="box-header"><span>Auto One-Hot Encoding & Partitioning</span></div>
+                    <pre><code id="customPrepCode">df_encoded = pd.get_dummies(df, drop_first=True, dtype=int)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)</code></pre>
+                  </div>
+                  <div class="split-stats-grid">
+                    <div class="stat-badge"><span class="stat-num" id="customTrainCount">40</span><span class="stat-lbl">Train Samples (80%)</span></div>
+                    <div class="stat-badge"><span class="stat-num" id="customTestCount">10</span><span class="stat-lbl">Test Samples (20%)</span></div>
+                    <div class="stat-badge"><span class="stat-num" id="customFeatureCount">5</span><span class="stat-lbl">Predictor Features</span></div>
+                  </div>
+                </div>
+                <div class="panel-sidebar">
+                  <div class="sidebar-box">
+                    <h4>Feature Space</h4>
+                    <ul class="tag-list" id="customFeatureTagList">
+                      <!-- Populated dynamically -->
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Phase 4: Custom -->
+            <div class="phase-panel" id="panelPhase4_custom">
+              <div class="panel-grid">
+                <div class="panel-main">
+                  <h3 class="panel-title">Phase 4: Modeling (Full Feature OLS Regression)</h3>
+                  <div class="formula-box">
+                    <code id="customModelFormula">Predicted Target = Intercept + Beta1(Feature1) + ...</code>
+                  </div>
+                  <div class="table-responsive">
+                    <table class="data-table" id="customCoefTable">
+                      <thead><tr><th>Feature</th><th>Coefficient (β)</th><th>Relative Magnitude</th></tr></thead>
+                      <tbody id="customCoefTableBody">
+                        <!-- Populated dynamically -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="panel-sidebar">
+                  <div class="sidebar-box">
+                    <h4>OLS Solver Info</h4>
+                    <div class="key-value-list">
+                      <div class="kv-row"><span>Intercept (β₀):</span> <strong id="customModelIntercept">--</strong></div>
+                      <div class="kv-row"><span>Solver:</span> <strong>Normal Equations (OLS)</strong></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Phase 5: Custom -->
+            <div class="phase-panel" id="panelPhase5_custom">
+              <div class="panel-grid">
+                <div class="panel-main">
+                  <h3 class="panel-title">Phase 5: Evaluation (Held-Out Test Set)</h3>
+                  <div class="eval-metrics-grid">
+                    <div class="eval-box"><span class="eval-lbl">R-Squared (R²)</span><span class="eval-val" id="customEvalR2">--</span><span class="eval-sub">Variance explained</span></div>
+                    <div class="eval-box"><span class="eval-lbl">RMSE</span><span class="eval-val" id="customEvalRmse">--</span><span class="eval-sub">Root Mean Squared Error</span></div>
+                    <div class="eval-box"><span class="eval-lbl">MAE</span><span class="eval-val" id="customEvalMae">--</span><span class="eval-sub">Mean Absolute Error</span></div>
+                    <div class="eval-box"><span class="eval-lbl">MSE</span><span class="eval-val" id="customEvalMse">--</span><span class="eval-sub">Mean Squared Error</span></div>
+                  </div>
+                  <div class="plot-showcase">
+                    <div class="plot-header">
+                      <h4>Actual vs. Predicted Scatter Plot (Test Set)</h4>
+                    </div>
+                    <div class="custom-canvas-container">
+                      <canvas id="customActualVsPredCanvas" width="680" height="320"></canvas>
+                    </div>
+                  </div>
+                </div>
+                <div class="panel-sidebar">
+                  <div class="sidebar-box">
+                    <h4>Test Diagnostics</h4>
+                    <p id="customEvalDiagnostics">Comparing predicted values against actual targets on the held-out test partition.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Phase 6: Custom -->
+            <div class="phase-panel" id="panelPhase6_custom">
+              <div class="panel-grid">
+                <div class="panel-main">
+                  <h3 class="panel-title">Phase 6: Deployment & Artifact Pipeline</h3>
+                  <div class="pipeline-flow">
+                    <div class="flow-step"><div class="flow-num">1</div><div class="flow-info"><strong>custom_regression.py</strong><span>CLI pipeline script</span></div></div>
+                    <div class="flow-arrow">➔</div>
+                    <div class="flow-step"><div class="flow-num">2</div><div class="flow-info"><strong>outputs/custom_regression_results.csv</strong><span>Export table</span></div></div>
+                    <div class="flow-arrow">➔</div>
+                    <div class="flow-step"><div class="flow-num">3</div><div class="flow-info"><strong>outputs/custom_actual_vs_predicted.png</strong><span>High-Res Plot</span></div></div>
+                  </div>
+                  <div style="margin-top:20px;">
+                    <a href="outputs/custom_forward_selection_results.csv" download class="btn btn-primary" id="btnDownloadCustomCsv">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                      Download Forward Selection CSV
+                    </a>
+                  </div>
+                </div>
+                <div class="panel-sidebar">
+                  <div class="sidebar-box">
+                    <h4>Run in Python Terminal</h4>
+                    <pre class="cli-box"><code id="customCliCommand">python custom_regression.py --url &lt;URL&gt;</code></pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -804,6 +1159,11 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
             <div class="chart-insight-callout dataset-content hidden-dataset" data-dataset="boston">
               <span class="callout-badge">Optimal Sweet Spot: Step 12</span>
               <span>Training CV RMSE reaches minimum at <strong>$4,614.30 (4.61k)</strong>, Test RMSE drops to <strong>$5,780.20</strong>, and Test R² peaks at <strong>0.5897</strong> (Excluding redundant building age).</span>
+            </div>
+            <!-- Insight callout for Custom -->
+            <div class="chart-insight-callout dataset-content hidden-dataset" data-dataset="custom">
+              <span class="callout-badge" id="customInsightBadge">Auto-Tuned Optimal Model</span>
+              <span id="customInsightText">Forward Selection minimizes 5-fold CV error with optimal feature subset.</span>
             </div>
           </div>
 
@@ -894,6 +1254,17 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
               <div class="step-card"><div class="step-badge">k = 13</div><div class="step-body"><div class="step-feature">+ age (Building Age)</div><div class="step-metrics"><span>CV RMSE: $4,649 <span class="trend-warn">▲ +35.0</span></span><span>Test RMSE: $5,784</span><span>Test R²: 0.5892</span></div></div></div>
             </div>
           </div>
+
+          <!-- Step Progression Cards: Custom Dataset -->
+          <div class="fs-steps-card dataset-content hidden-dataset" data-dataset="custom">
+            <div class="steps-header">
+              <h3 id="customFsStepsHeader">Custom Dataset Selection Steps</h3>
+              <span class="badge badge-accent" id="customFsStepsBadge">Processing</span>
+            </div>
+            <div class="steps-list" id="customFsStepsList" style="max-height: 480px; overflow-y: auto;">
+              <!-- Populated dynamically via app.js -->
+            </div>
+          </div>
         </div>
 
         <!-- Full Results Table: Startups -->
@@ -945,6 +1316,25 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
                 <tr><td>11</td><td>rad</td><td><code>... + rad</code></td><td>$4,666.80</td><td>$5,858.30</td><td>0.5785</td><td><span class="status-pill">Highway Accessibility</span></td></tr>
                 <tr class="table-row-highlight"><td>12</td><td><strong>tax</strong></td><td><code>12 features (all except age)</code></td><td><strong class="text-green">$4,614.30</strong></td><td><strong class="text-green">$5,780.20</strong></td><td><strong class="text-green">0.5897</strong></td><td><span class="status-pill status-optimal">★ Optimal Model</span></td></tr>
                 <tr><td>13</td><td>age</td><td><code>All 13 Features</code></td><td>$4,649.30</td><td>$5,783.51</td><td>0.5892</td><td><span class="status-pill status-full">Full Model (Redundant Age)</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Full Results Table: Custom Dataset -->
+        <div class="fs-table-card dataset-content hidden-dataset" data-dataset="custom">
+          <div class="card-header-flex">
+            <h3 id="customFsTableTitle">Complete Forward Selection Results Table (Custom Dataset)</h3>
+            <button class="btn btn-sm btn-outline" id="btnExportCustomFsCsv">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Export Results CSV
+            </button>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table fs-table" id="customFsTable">
+              <thead><tr><th>Step (k)</th><th>Added Feature</th><th>Selected Features List</th><th>Train 5-Fold CV RMSE</th><th>Test RMSE</th><th>Test R²</th><th>Status</th></tr></thead>
+              <tbody id="customFsTableBody">
+                <!-- Populated dynamically via app.js -->
               </tbody>
             </table>
           </div>
@@ -1181,6 +1571,66 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
             </div>
           </div>
         </div>
+
+        <!-- Custom Dataset Simulator -->
+        <div class="dataset-content hidden-dataset" data-dataset="custom">
+          <div class="section-header">
+            <span class="section-tag">Universal Estimator</span>
+            <h2 class="section-title" id="customSimTitle">Live Custom Model Simulator</h2>
+            <p class="section-desc" id="customSimDesc">Interact with sliders to adjust feature inputs and see immediate predicted target values computed using our trained regression model.</p>
+          </div>
+
+          <div class="simulator-layout">
+            <div class="sim-card controls-card">
+              <div class="sim-card-header">
+                <h3>Feature Inputs</h3>
+                <button class="btn btn-xs btn-outline" id="btnResetCustomSim">Reset Defaults</button>
+              </div>
+
+              <div class="form-group">
+                <label for="customSimModelSelect" class="input-label">Active Prediction Model:</label>
+                <select id="customSimModelSelect" class="form-select">
+                  <option value="optimal" selected>★ Optimal Model (Forward Selection Subset)</option>
+                  <option value="full">Full Model (All Features)</option>
+                </select>
+              </div>
+
+              <div id="customSlidersContainer">
+                <!-- Dynamically generated sliders for features -->
+              </div>
+            </div>
+
+            <div class="sim-card results-card">
+              <div class="sim-card-header">
+                <h3>Real-Time Prediction Output</h3>
+                <span class="live-indicator"><span class="live-dot"></span> Live Math</span>
+              </div>
+
+              <div class="primary-result-box">
+                <div class="res-label" id="customSimTargetLabel">Projected Target Value</div>
+                <div class="res-value" id="customValPredicted">--</div>
+                <div class="res-meta">
+                  <span class="meta-tag" id="customSimMetaModel">Model: Optimal</span>
+                  <span class="meta-tag" id="customSimMetaR2">Test R² = --</span>
+                </div>
+              </div>
+
+              <div class="contribution-section">
+                <h4>Feature Contribution Breakdown</h4>
+                <div class="contrib-bars" id="customWaterfallContainer">
+                  <!-- Dynamically populated waterfall bars -->
+                </div>
+              </div>
+
+              <div class="advisor-box">
+                <div class="advisor-icon">⚡</div>
+                <div class="advisor-text" id="customAdvisorText">
+                  <strong>Model Sensitivity:</strong> Adjust the sliders to observe marginal impacts of each input feature on predicted outcomes.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -1283,6 +1733,40 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
                   </tr>
                 </thead>
                 <tbody id="bostonTableBody">
+                  <!-- Dynamically populated via app.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Custom Dataset Explorer -->
+        <div class="dataset-content hidden-dataset" data-dataset="custom">
+          <div class="section-header">
+            <span class="section-tag">Interactive Explorer</span>
+            <h2 class="section-title" id="customExplorerTitle">Custom Dataset Records Explorer</h2>
+            <p class="section-desc" id="customExplorerDesc">Search and inspect all parsed records from your custom tabular dataset.</p>
+          </div>
+
+          <div class="dataset-card">
+            <div class="dataset-toolbar">
+              <div class="search-box">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="customDatasetSearch" placeholder="Search loaded dataset records..." class="search-input">
+              </div>
+            </div>
+
+            <div class="dataset-stats-bar" id="customStatsBar">
+              <span>Showing <strong id="customVisibleCount">50</strong> records</span>
+              <span id="customStatMeanTarget">Target: <strong id="customMeanTargetVal">--</strong></span>
+            </div>
+
+            <div class="table-responsive">
+              <table class="data-table interactive-table" id="interactiveCustomTable">
+                <thead id="customTableHead">
+                  <!-- Dynamically populated via app.js -->
+                </thead>
+                <tbody id="customExplorerTableBody">
                   <!-- Dynamically populated via app.js -->
                 </tbody>
               </table>
