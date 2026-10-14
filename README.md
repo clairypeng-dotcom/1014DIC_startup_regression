@@ -1,4 +1,8 @@
+
 https://clairypeng-dotcom.github.io/1014DIC_startup_regression/
+<img width="1080" height="676" alt="截圖 2026-10-14 下午3 41 57" src="https://github.com/user-attachments/assets/57d255b7-fb64-4880-88a9-c94a65fa533d" />
+
+<img width="1440" height="5127" alt="Machine Learning Regression Analytics Studio | 50 Startups   Boston Housing (CRISP-DM) 2" src="https://github.com/user-attachments/assets/7f8289fd-2a8a-4efc-bcd8-8d26cfc18459" />
 
 
 # Machine Learning Regression Analytics Studio: 50 Startups & Boston Housing (CRISP-DM)
