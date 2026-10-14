@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>50 Startups Machine Learning Analytics | CRISP-DM Regression & Forward Selection</title>
+  <meta name="description" content="Interactive Machine Learning dashboard for 50 Startups Multiple Linear Regression and Forward Selection using the CRISP-DM methodology. Predict startup profits, explore cross-validation results, and test feature subsets.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Ambient background glow elements -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+  <div class="ambient-glow glow-3"></div>
+
+  <!-- Navigation Bar -->
+  <header class="navbar" id="mainNavbar">
+    <div class="nav-container">
+      <a href="#hero" class="nav-brand" id="brandLogo">
+        <span class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+          </svg>
+        </span>
+        <span class="brand-text">Startup<span class="brand-accent">Regression</span></span>
+        <span class="badge badge-accent">CRISP-DM</span>
+      </a>
+
+      <nav class="nav-links" id="desktopNav">
+        <a href="#kpi-summary" class="nav-link" id="navKpi">Executive KPIs</a>
+        <a href="#crisp-dm-section" class="nav-link" id="navCrispDm">CRISP-DM Phases</a>
+        <a href="#forward-selection-section" class="nav-link" id="navFs">Forward Selection</a>
+        <a href="#simulator-section" class="nav-link" id="navSimulator">Profit Simulator</a>
+        <a href="#dataset-section" class="nav-link" id="navDataset">Data Explorer</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="#simulator-section" class="btn btn-primary btn-sm" id="btnLaunchSim">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+          Live Simulator
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-main">
+    <!-- Hero Section -->
+    <section class="hero-section" id="hero">
+      <div class="hero-content">
+        <div class="hero-badges">
+          <span class="pill pill-cyan">50 Startups Dataset</span>
+          <span class="pill pill-purple">5-Fold Cross Validation</span>
+          <span class="pill pill-green">Optimal Test R² = 0.9474</span>
+        </div>
+        <h1 class="hero-title" id="pageMainHeading">
+          Multiple Linear Regression & Forward Selection
+          <span class="gradient-text">Profitability Analytics</span>
+        </h1>
+        <p class="hero-subtitle">
+          An empirical Machine Learning investigation based on the <strong>CRISP-DM</strong> methodology. Evaluating how operational capital allocation across <strong>R&D</strong>, <strong>Administration</strong>, and <strong>Marketing</strong> influences startup operating profit.
+        </p>
+
+        <div class="hero-cta-group">
+          <a href="#simulator-section" class="btn btn-primary" id="heroCtaSim">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            Simulate Startup Profit
+          </a>
+          <a href="#forward-selection-section" class="btn btn-secondary" id="heroCtaFs">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            View Feature Selection (k=1..5)
+          </a>
+          <a href="outputs/actual_vs_predicted_profit.png" target="_blank" class="btn btn-outline" id="heroCtaPlot">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            Inspect Scatter Plot
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Executive KPI Metric Cards -->
+    <section class="kpi-section" id="kpi-summary">
+      <div class="section-container">
+        <div class="kpi-grid">
+          <!-- Card 1 -->
+          <div class="kpi-card highlight-card" id="kpiCardBestR2">
+            <div class="kpi-icon icon-green">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            </div>
+            <div class="kpi-label">Optimal Model Test R² (k=2)</div>
+            <div class="kpi-value text-green">0.9474</div>
+            <div class="kpi-detail">
+              <span class="trend-badge positive">▲ +1.27%</span> vs Full 5-Feature model (0.9347)
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="kpi-card" id="kpiCardBestRmse">
+            <div class="kpi-icon icon-cyan">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+            </div>
+            <div class="kpi-label">Optimal Test RMSE (k=2)</div>
+            <div class="kpi-value">$8,198.80</div>
+            <div class="kpi-detail">
+              <span class="trend-badge positive">▼ -$939.19</span> Error reduction vs full model ($9,137.99)
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="kpi-card" id="kpiCardTopPredictor">
+            <div class="kpi-icon icon-purple">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            </div>
+            <div class="kpi-label">Primary Driver (R&D Spend)</div>
+            <div class="kpi-value">+0.7735</div>
+            <div class="kpi-detail">
+              Accounts for <strong>94.65%</strong> standalone profit variation
+            </div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="kpi-card" id="kpiCardOverfitting">
+            <div class="kpi-icon icon-amber">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            </div>
+            <div class="kpi-label">Occam's Razor Evidence</div>
+            <div class="kpi-value text-amber">Admin & State</div>
+            <div class="kpi-detail">
+              Adding Step 3..5 increases CV RMSE from <strong>$9,482</strong> to <strong>$10,158</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CRISP-DM Six Phases Interactive Explorer -->
+    <section class="section crisp-dm-section" id="crisp-dm-section">
+      <div class="section-container">
+        <div class="section-header">
+          <span class="section-tag">Methodology</span>
+          <h2 class="section-title">CRISP-DM 6-Phase Lifecycle Explorer</h2>
+          <p class="section-desc">Click through each phase of the Cross-Industry Standard Process for Data Mining to inspect methods, code designs, and statistical outputs.</p>
+        </div>
+
+        <!-- Phase Tabs Navigation -->
+        <div class="phase-nav-tabs" role="tablist" id="phaseTabContainer">
+          <button class="phase-tab active" data-phase="1" id="tabPhase1">
+            <span class="tab-num">01</span>
+            <span class="tab-name">Business Understanding</span>
+          </button>
+          <button class="phase-tab" data-phase="2" id="tabPhase2">
+            <span class="tab-num">02</span>
+            <span class="tab-name">Data Understanding</span>
+          </button>
+          <button class="phase-tab" data-phase="3" id="tabPhase3">
+            <span class="tab-num">03</span>
+            <span class="tab-name">Data Preparation</span>
+          </button>
+          <button class="phase-tab" data-phase="4" id="tabPhase4">
+            <span class="tab-num">04</span>
+            <span class="tab-name">Modeling</span>
+          </button>
+          <button class="phase-tab" data-phase="5" id="tabPhase5">
+            <span class="tab-num">05</span>
+            <span class="tab-name">Evaluation</span>
+          </button>
+          <button class="phase-tab" data-phase="6" id="tabPhase6">
+            <span class="tab-num">06</span>
+            <span class="tab-name">Deployment</span>
+          </button>
+        </div>
+
+        <!-- Phase Panels Content Container -->
+        <div class="phase-panels-wrapper">
+          <!-- Phase 1 -->
+          <div class="phase-panel active" id="panelPhase1">
+            <div class="panel-grid">
+              <div class="panel-main">
+                <h3 class="panel-title">Phase 1: Business Understanding</h3>
+                <p class="panel-lead">
+                  Predicting startup profitability is crucial for optimizing investment allocations and reducing early-stage cash burn rates.
+                </p>
+                <div class="card-feature-list">
+                  <div class="feature-item">
+                    <div class="feature-bullet">1</div>
+                    <div>
+                      <strong>Venture Capital & Investor Underwriting</strong>
+                      <p>Helps investors quantitatively benchmark capital efficiency and predict financial upside based on founders' projected spending distributions.</p>
+                    </div>
+                  </div>
+                  <div class="feature-item">
+                    <div class="feature-bullet">2</div>
+                    <div>
+                      <strong>Executive Budget Strategy</strong>
+                      <p>Enables startup founders to identify high-leverage expenditure categories and cut administrative overhead.</p>
+                    </div>
+                  </div>
+                  <div class="feature-item">
+                    <div class="feature-bullet">3</div>
+                    <div>
+                      <strong>Parsimony & Model Interpretability</strong>
+                      <p>Avoids building overly complex black-box models when linear factors provide clear, actionable insights.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="panel-sidebar">
+                <div class="sidebar-box">
+                  <h4>Target Variable</h4>
+                  <div class="metric-pill">Profit ($)</div>
+                  <h4>Key Feature Space</h4>
+                  <ul class="tag-list">
+                    <li>R&D Spend ($)</li>
+                    <li>Administration ($)</li>
+                    <li>Marketing Spend ($)</li>
+                    <li>State (Categorical)</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Phase 2 -->
+          <div class="phase-panel" id="panelPhase2">
+            <div class="panel-grid">
+              <div class="panel-main">
+                <h3 class="panel-title">Phase 2: Data Understanding</h3>
+                <p class="panel-lead">
+                  Dataset programmatically downloaded using Python <code>requests</code> from GitHub repository. 50 observation rows, 5 columns, zero missing values.
+                </p>
+                <div class="table-responsive">
+                  <table class="data-table" id="edaSummaryTable">
+                    <thead>
+                      <tr>
+                        <th>Feature</th>
+                        <th>Type</th>
+                        <th>Mean</th>
+                        <th>Std Dev</th>
+                        <th>Min</th>
+                        <th>Max</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><strong>R&D Spend</strong></td>
+                        <td>float64</td>
+                        <td>$73,721.62</td>
+                        <td>$45,902.26</td>
+                        <td>$0.00</td>
+                        <td>$165,349.20</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Administration</strong></td>
+                        <td>float64</td>
+                        <td>$121,344.64</td>
+                        <td>$28,017.78</td>
+                        <td>$51,283.14</td>
+                        <td>$182,645.56</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Marketing Spend</strong></td>
+                        <td>float64</td>
+                        <td>$211,025.10</td>
+                        <td>$122,290.31</td>
+                        <td>$0.00</td>
+                        <td>$471,784.10</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Profit (Target)</strong></td>
+                        <td>float64</td>
+                        <td>$112,012.64</td>
+                        <td>$40,306.18</td>
+                        <td>$14,681.40</td>
+                        <td>$192,261.83</td>
+                      </tr>
+                      <tr>
+                        <td><strong>State</strong></td>
+                        <td>object</td>
+                        <td colspan="4">3 categories: California (17), New York (17), Florida (16)</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="panel-sidebar">
+                <div class="sidebar-box">
+                  <h4>Data Hygiene Checks</h4>
+                  <div class="checklist">
+                    <div class="check-item"><span class="check-icon">✓</span> Missing values: 0</div>
+                    <div class="check-item"><span class="check-icon">✓</span> Duplicated rows: 0</div>
+                    <div class="check-item"><span class="check-icon">✓</span> Outlier integrity: Verified</div>
+                    <div class="check-item"><span class="check-icon">✓</span> Source HTTP 200 OK</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Phase 3 -->
+          <div class="phase-panel" id="panelPhase3">
+            <div class="panel-grid">
+              <div class="panel-main">
+                <h3 class="panel-title">Phase 3: Data Preparation</h3>
+                <p class="panel-lead">
+                  Solving the <strong>Dummy Variable Trap</strong> (Multicollinearity) via One-Hot Encoding and strict train-test separation.
+                </p>
+                <div class="code-explain-box">
+                  <div class="box-header">
+                    <span>One-Hot Encoding with drop_first=True</span>
+                    <span class="code-badge">pandas.get_dummies</span>
+                  </div>
+                  <pre><code>df_encoded = pd.get_dummies(df, columns=['State'], drop_first=True, dtype=int)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)</code></pre>
+                  <p class="box-note">
+                    <strong>Why drop_first=True?</strong> In linear models, if $k$ categories are encoded into $k$ binary dummies, the sum of dummy columns equals the constant column (1.0), causing perfect multicollinearity $(X^TX)^{-1}$ singularity. Dropping <code>California</code> sets it as the baseline reference category.
+                  </p>
+                </div>
+                <div class="split-stats-grid">
+                  <div class="stat-badge">
+                    <span class="stat-num">40</span>
+                    <span class="stat-lbl">Train Samples (80%)</span>
+                  </div>
+                  <div class="stat-badge">
+                    <span class="stat-num">10</span>
+                    <span class="stat-lbl">Test Samples (20%)</span>
+                  </div>
+                  <div class="stat-badge">
+                    <span class="stat-num">5</span>
+                    <span class="stat-lbl">Predictor Features</span>
+                  </div>
+                </div>
+              </div>
+              <div class="panel-sidebar">
+                <div class="sidebar-box">
+                  <h4>Encoded Design Matrix</h4>
+                  <ul class="tag-list">
+                    <li>R&D Spend (Continuous)</li>
+                    <li>Administration (Continuous)</li>
+                    <li>Marketing Spend (Continuous)</li>
+                    <li>State_Florida (0 or 1)</li>
+                    <li>State_New York (0 or 1)</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Phase 4 -->
+          <div class="phase-panel" id="panelPhase4">
+            <div class="panel-grid">
+              <div class="panel-main">
+                <h3 class="panel-title">Phase 4: Modeling (Full 5-Feature Linear Regression)</h3>
+                <p class="panel-lead">
+                  Trained via Ordinary Least Squares (OLS) on the 40-sample training partition.
+                </p>
+                <div class="formula-box">
+                  <code>Predicted Profit = 42,554.17 + 0.7735(R&D) + 0.0329(Admin) + 0.0366(Marketing) - 959.28(Florida) + 699.37(New York)</code>
+                </div>
+                <div class="table-responsive">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Feature</th>
+                        <th>Coefficient (β)</th>
+                        <th>Standardized Impact</th>
+                        <th>Interpretation</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><strong>R&D Spend</strong></td>
+                        <td class="text-green font-mono">+0.773467</td>
+                        <td><div class="bar-container"><div class="bar-fill green-bar" style="width: 95%;"></div></div></td>
+                        <td>Strong primary driver. +$0.77 profit per $1 R&D.</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Administration</strong></td>
+                        <td class="text-cyan font-mono">+0.032885</td>
+                        <td><div class="bar-container"><div class="bar-fill cyan-bar" style="width: 5%;"></div></div></td>
+                        <td>Negligible direct influence (~$0.03 per $1).</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Marketing Spend</strong></td>
+                        <td class="text-purple font-mono">+0.036610</td>
+                        <td><div class="bar-container"><div class="bar-fill purple-bar" style="width: 6%;"></div></div></td>
+                        <td>Modest positive contribution (~$0.037 per $1).</td>
+                      </tr>
+                      <tr>
+                        <td><strong>State_Florida</strong></td>
+                        <td class="text-amber font-mono">-959.284</td>
+                        <td><div class="bar-container"><div class="bar-fill amber-bar" style="width: 3%;"></div></div></td>
+                        <td>Relative penalty vs California baseline.</td>
+                      </tr>
+                      <tr>
+                        <td><strong>State_New York</strong></td>
+                        <td class="text-cyan font-mono">+699.369</td>
+                        <td><div class="bar-container"><div class="bar-fill cyan-bar" style="width: 2%;"></div></div></td>
+                        <td>Slight premium vs California baseline.</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="panel-sidebar">
+                <div class="sidebar-box">
+                  <h4>Model Coefficients</h4>
+                  <div class="key-value-list">
+                    <div class="kv-row"><span>Intercept:</span> <strong>$42,554.17</strong></div>
+                    <div class="kv-row"><span>Fit Method:</span> <strong>OLS (sklearn)</strong></div>
+                    <div class="kv-row"><span>Train Rows:</span> <strong>40</strong></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Phase 5 -->
+          <div class="phase-panel" id="panelPhase5">
+            <div class="panel-grid">
+              <div class="panel-main">
+                <h3 class="panel-title">Phase 5: Evaluation (Full Model vs Optimal Subset)</h3>
+                <p class="panel-lead">
+                  Out-of-sample performance on the held-out 10-sample test set.
+                </p>
+                <div class="eval-metrics-grid">
+                  <div class="eval-box">
+                    <span class="eval-lbl">R-Squared (R²)</span>
+                    <span class="eval-val">0.9347</span>
+                    <span class="eval-sub">93.47% test variance explained</span>
+                  </div>
+                  <div class="eval-box">
+                    <span class="eval-lbl">RMSE</span>
+                    <span class="eval-val">$9,137.99</span>
+                    <span class="eval-sub">Root Mean Squared Error</span>
+                  </div>
+                  <div class="eval-box">
+                    <span class="eval-lbl">MAE</span>
+                    <span class="eval-val">$7,514.29</span>
+                    <span class="eval-sub">Mean Absolute Error</span>
+                  </div>
+                  <div class="eval-box">
+                    <span class="eval-lbl">MSE</span>
+                    <span class="eval-val">8.3503 × 10⁷</span>
+                    <span class="eval-sub">Mean Squared Error</span>
+                  </div>
+                </div>
+
+                <div class="plot-showcase">
+                  <div class="plot-header">
+                    <h4>Actual vs. Predicted Profit Visualization (Test Set)</h4>
+                    <a href="outputs/actual_vs_predicted_profit.png" target="_blank" class="btn btn-sm btn-outline">Full Resolution</a>
+                  </div>
+                  <div class="plot-img-container">
+                    <img src="outputs/actual_vs_predicted_profit.png" alt="Actual vs Predicted Profit Scatter Plot" class="plot-img" id="actualVsPredImg">
+                  </div>
+                </div>
+              </div>
+              <div class="panel-sidebar">
+                <div class="sidebar-box">
+                  <h4>Plot Diagnostics</h4>
+                  <p>The scatter points closely track the diagonal 45-degree reference line ($y = x$), indicating homoscedasticity and strong linear fidelity across low and high profit startups.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Phase 6 -->
+          <div class="phase-panel" id="panelPhase6">
+            <div class="panel-grid">
+              <div class="panel-main">
+                <h3 class="panel-title">Phase 6: Deployment & Artifact Pipeline</h3>
+                <p class="panel-lead">
+                  Automated execution, self-contained artifacts, and practical guidelines for business deployment.
+                </p>
+                <div class="pipeline-flow">
+                  <div class="flow-step">
+                    <div class="flow-num">1</div>
+                    <div class="flow-info">
+                      <strong>startup_regression.py</strong>
+                      <span>Single-command automated pipeline</span>
+                    </div>
+                  </div>
+                  <div class="flow-arrow">➔</div>
+                  <div class="flow-step">
+                    <div class="flow-num">2</div>
+                    <div class="flow-info">
+                      <strong>outputs/forward_selection_results.csv</strong>
+                      <span>Audit-ready tabular metrics</span>
+                    </div>
+                  </div>
+                  <div class="flow-arrow">➔</div>
+                  <div class="flow-step">
+                    <div class="flow-num">3</div>
+                    <div class="flow-info">
+                      <strong>outputs/actual_vs_predicted_profit.png</strong>
+                      <span>Publication-quality 300 DPI plot</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="threats-box">
+                  <h4>Threats to Validity & Limitations</h4>
+                  <ul>
+                    <li><strong>Sample Size ($N=50$):</strong> Benchmark sample; real-world deployment requires ongoing retraining across economic quarters.</li>
+                    <li><strong>Association vs. Causation:</strong> High R&D expenditure correlates with profit, but strategic execution and product-market fit remain vital.</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="panel-sidebar">
+                <div class="sidebar-box">
+                  <h4>Run Pipeline Locally</h4>
+                  <pre class="cli-box"><code>python startup_regression.py</code></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Forward Selection Deep-Dive & Interactive Chart Section -->
+    <section class="section fs-section" id="forward-selection-section">
+      <div class="section-container">
+        <div class="section-header">
+          <span class="section-tag">Feature Selection</span>
+          <h2 class="section-title">Forward Selection with 5-Fold Cross-Validation</h2>
+          <p class="section-desc">
+            Iterative greedy forward selection tested feature subsets from $k=1$ to $k=5$. Each feature was selected based strictly on the <strong>Training Set 5-Fold CV RMSE</strong> (Zero Test Leakage).
+          </p>
+        </div>
+
+        <!-- Forward Selection Results Interactive Chart & Table -->
+        <div class="fs-analytics-grid">
+          <!-- Canvas Interactive Chart -->
+          <div class="fs-chart-card">
+            <div class="chart-header">
+              <div class="chart-title">
+                <h3>Error & Performance Curves ($k=1$ to $5$)</h3>
+                <span class="chart-sub">Comparing Train CV RMSE, Test RMSE, and Test R²</span>
+              </div>
+              <div class="chart-legend">
+                <span class="legend-item"><span class="legend-color color-blue"></span> Train 5-Fold CV RMSE</span>
+                <span class="legend-item"><span class="legend-color color-green"></span> Test RMSE</span>
+                <span class="legend-item"><span class="legend-color color-purple"></span> Test R²</span>
+              </div>
+            </div>
+            <div class="canvas-wrapper">
+              <canvas id="fsChartCanvas" width="700" height="340"></canvas>
+            </div>
+            <div class="chart-insight-callout">
+              <span class="callout-badge">Optimal Sweet Spot: Step 2</span>
+              <span>Training CV RMSE reaches global minimum at <strong>$9,482.34</strong>, Test RMSE drops to <strong>$8,198.80</strong>, and Test R² peaks at <strong>0.9474</strong>.</span>
+            </div>
+          </div>
+
+          <!-- Step Progression Cards -->
+          <div class="fs-steps-card">
+            <div class="steps-header">
+              <h3>Iterative Selection Steps</h3>
+              <span class="badge badge-accent">5 Steps Complete</span>
+            </div>
+
+            <div class="steps-list" id="fsStepsList">
+              <!-- Step 1 -->
+              <div class="step-card" data-step="1">
+                <div class="step-badge">k = 1</div>
+                <div class="step-body">
+                  <div class="step-feature">+ R&D Spend</div>
+                  <div class="step-metrics">
+                    <span>Train CV RMSE: <strong>$9,745.40</strong></span>
+                    <span>Test RMSE: <strong>$8,274.87</strong></span>
+                    <span>Test R²: <strong>0.9465</strong></span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 2 (Winner) -->
+              <div class="step-card winner-card" data-step="2">
+                <div class="step-badge winner-badge">★ k = 2 (Best)</div>
+                <div class="step-body">
+                  <div class="step-feature">+ Marketing Spend</div>
+                  <div class="step-features-all">R&D Spend, Marketing Spend</div>
+                  <div class="step-metrics">
+                    <span class="text-green">Train CV RMSE: <strong>$9,482.34</strong></span>
+                    <span class="text-green">Test RMSE: <strong>$8,198.80</strong></span>
+                    <span class="text-green">Test R²: <strong>0.9474</strong></span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 3 -->
+              <div class="step-card" data-step="3">
+                <div class="step-badge">k = 3</div>
+                <div class="step-body">
+                  <div class="step-feature">+ Administration</div>
+                  <div class="step-metrics">
+                    <span>Train CV RMSE: $9,678.08 <span class="trend-warn">▲ +195.74</span></span>
+                    <span>Test RMSE: $8,803.78</span>
+                    <span>Test R²: 0.9394</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 4 -->
+              <div class="step-card" data-step="4">
+                <div class="step-badge">k = 4</div>
+                <div class="step-body">
+                  <div class="step-feature">+ State_Florida</div>
+                  <div class="step-metrics">
+                    <span>Train CV RMSE: $9,885.56 <span class="trend-warn">▲ +207.48</span></span>
+                    <span>Test RMSE: $9,068.54</span>
+                    <span>Test R²: 0.9357</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 5 -->
+              <div class="step-card" data-step="5">
+                <div class="step-badge">k = 5</div>
+                <div class="step-body">
+                  <div class="step-feature">+ State_New York</div>
+                  <div class="step-metrics">
+                    <span>Train CV RMSE: $10,158.66 <span class="trend-warn">▲ +273.10</span></span>
+                    <span>Test RMSE: $9,137.99</span>
+                    <span>Test R²: 0.9347</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Full Results Table -->
+        <div class="fs-table-card">
+          <div class="card-header-flex">
+            <h3>Complete Forward Selection Results Table (CSV View)</h3>
+            <a href="outputs/forward_selection_results.csv" download class="btn btn-sm btn-outline">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Download CSV
+            </a>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table fs-table" id="fsDataTable">
+              <thead>
+                <tr>
+                  <th>Step (k)</th>
+                  <th>Added Feature</th>
+                  <th>Selected Features List</th>
+                  <th>Train 5-Fold CV RMSE ($)</th>
+                  <th>Test RMSE ($)</th>
+                  <th>Test R-squared</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>1</strong></td>
+                  <td>R&D Spend</td>
+                  <td><code>R&D Spend</code></td>
+                  <td>$9,745.40</td>
+                  <td>$8,274.87</td>
+                  <td>0.9465</td>
+                  <td><span class="status-pill">Baseline</span></td>
+                </tr>
+                <tr class="table-row-highlight">
+                  <td><strong>2</strong></td>
+                  <td><strong>Marketing Spend</strong></td>
+                  <td><code>R&D Spend, Marketing Spend</code></td>
+                  <td><strong class="text-green">$9,482.34</strong></td>
+                  <td><strong class="text-green">$8,198.80</strong></td>
+                  <td><strong class="text-green">0.9474</strong></td>
+                  <td><span class="status-pill status-optimal">★ Optimal Model</span></td>
+                </tr>
+                <tr>
+                  <td><strong>3</strong></td>
+                  <td>Administration</td>
+                  <td><code>R&D Spend, Marketing Spend, Administration</code></td>
+                  <td>$9,678.08</td>
+                  <td>$8,803.78</td>
+                  <td>0.9394</td>
+                  <td><span class="status-pill status-degrade">Overfitting Begins</span></td>
+                </tr>
+                <tr>
+                  <td><strong>4</strong></td>
+                  <td>State_Florida</td>
+                  <td><code>R&D Spend, Marketing Spend, Administration, State_Florida</code></td>
+                  <td>$9,885.56</td>
+                  <td>$9,068.54</td>
+                  <td>0.9357</td>
+                  <td><span class="status-pill status-degrade">Increased Variance</span></td>
+                </tr>
+                <tr>
+                  <td><strong>5</strong></td>
+                  <td>State_New York</td>
+                  <td><code>R&D Spend, Marketing Spend, Administration, State_Florida, State_New York</code></td>
+                  <td>$10,158.66</td>
+                  <td>$9,137.99</td>
+                  <td>0.9347</td>
+                  <td><span class="status-pill status-full">Full Model</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Startup Profit Simulator -->
+    <section class="section simulator-section" id="simulator-section">
+      <div class="section-container">
+        <div class="section-header">
+          <span class="section-tag">Interactive Tool</span>
+          <h2 class="section-title">Live Startup Profit Prediction Engine</h2>
+          <p class="section-desc">
+            Adjust budget inputs across spending categories and geography to calculate expected profit in real-time, powered directly by our trained scikit-learn coefficients.
+          </p>
+        </div>
+
+        <div class="simulator-layout">
+          <!-- Controls Column -->
+          <div class="sim-card controls-card">
+            <div class="sim-card-header">
+              <h3>Input Startup Financials</h3>
+              <button class="btn btn-xs btn-outline" id="btnResetSim">Reset Defaults</button>
+            </div>
+
+            <!-- Model Selector -->
+            <div class="form-group">
+              <label for="simModelSelect" class="input-label">
+                Active Prediction Model:
+                <span class="label-info">Switch between Optimal and Full models</span>
+              </label>
+              <select id="simModelSelect" class="form-select">
+                <option value="optimal" selected>★ Optimal Model (k=2: R&D + Marketing, R² = 0.9474)</option>
+                <option value="full">Full Baseline Model (k=5: All Features, R² = 0.9347)</option>
+                <option value="compare">Compare Both Models Side-by-Side</option>
+              </select>
+            </div>
+
+            <!-- R&D Spend Slider -->
+            <div class="slider-group">
+              <div class="slider-header">
+                <label for="rangeRd" class="slider-title">R&D Spend ($)</label>
+                <span class="slider-display" id="displayRd">$100,000</span>
+              </div>
+              <input type="range" id="rangeRd" min="0" max="250000" step="1000" value="100000" class="slider-input">
+              <div class="slider-ticks">
+                <span>$0</span>
+                <span>$100k</span>
+                <span>$250k</span>
+              </div>
+            </div>
+
+            <!-- Marketing Spend Slider -->
+            <div class="slider-group">
+              <div class="slider-header">
+                <label for="rangeMarketing" class="slider-title">Marketing Spend ($)</label>
+                <span class="slider-display" id="displayMarketing">$250,000</span>
+              </div>
+              <input type="range" id="rangeMarketing" min="0" max="500000" step="2500" value="250000" class="slider-input">
+              <div class="slider-ticks">
+                <span>$0</span>
+                <span>$250k</span>
+                <span>$500k</span>
+              </div>
+            </div>
+
+            <!-- Administration Spend Slider -->
+            <div class="slider-group" id="groupAdmin">
+              <div class="slider-header">
+                <label for="rangeAdmin" class="slider-title">Administration Spend ($)</label>
+                <span class="slider-display" id="displayAdmin">$120,000</span>
+              </div>
+              <input type="range" id="rangeAdmin" min="30000" max="250000" step="1000" value="120000" class="slider-input">
+              <div class="slider-ticks">
+                <span>$30k</span>
+                <span>$120k</span>
+                <span>$250k</span>
+              </div>
+              <div class="slider-note" id="adminNotice">Ignored in Optimal 2-feature model to prevent variance inflation.</div>
+            </div>
+
+            <!-- State Selector -->
+            <div class="form-group" id="groupState">
+              <label for="selectState" class="input-label">Headquarters State:</label>
+              <select id="selectState" class="form-select">
+                <option value="California" selected>California (Baseline Reference)</option>
+                <option value="New York">New York</option>
+                <option value="Florida">Florida</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Live Output Column -->
+          <div class="sim-card results-card">
+            <div class="sim-card-header">
+              <h3>Real-Time Prediction Output</h3>
+              <span class="live-indicator"><span class="live-dot"></span> Live Math</span>
+            </div>
+
+            <!-- Main Predicted Profit -->
+            <div class="primary-result-box" id="singleResultBox">
+              <div class="res-label" id="resModelLabel">Projected Operating Profit (Optimal Model)</div>
+              <div class="res-value" id="valPredictedProfit">$133,352.33</div>
+              <div class="res-meta">
+                <span class="meta-tag" id="valProfitMargin">Estimated ROI: +28.3%</span>
+                <span class="meta-tag" id="valTotalSpend">Total Spend: $470,000</span>
+              </div>
+            </div>
+
+            <!-- Dual Compare Box (Hidden by default) -->
+            <div class="dual-compare-box hidden" id="dualCompareBox">
+              <div class="compare-col optimal-col">
+                <div class="comp-label">Optimal Model (k=2)</div>
+                <div class="comp-val text-green" id="compValOptimal">$133,352</div>
+                <div class="comp-sub">Test R² = 0.9474 (RMSE: $8,198)</div>
+              </div>
+              <div class="compare-col full-col">
+                <div class="comp-label">Full Model (k=5)</div>
+                <div class="comp-val text-cyan" id="compValFull">$133,028</div>
+                <div class="comp-sub">Test R² = 0.9347 (RMSE: $9,137)</div>
+              </div>
+            </div>
+
+            <!-- Contribution Waterfall Breakdown -->
+            <div class="contribution-section">
+              <h4>Profit Attribution Breakdown</h4>
+              <div class="contrib-bars" id="contribBars">
+                <div class="contrib-row">
+                  <span class="contrib-name">Base Intercept (β₀)</span>
+                  <div class="contrib-track"><div class="contrib-fill fill-base" id="barBase" style="width: 35%;"></div></div>
+                  <span class="contrib-amount" id="amtBase">+$46,346</span>
+                </div>
+                <div class="contrib-row">
+                  <span class="contrib-name">R&D Impact</span>
+                  <div class="contrib-track"><div class="contrib-fill fill-rd" id="barRd" style="width: 55%;"></div></div>
+                  <span class="contrib-amount" id="amtRd">+$78,862</span>
+                </div>
+                <div class="contrib-row">
+                  <span class="contrib-name">Marketing Impact</span>
+                  <div class="contrib-track"><div class="contrib-fill fill-marketing" id="barMarketing" style="width: 10%;"></div></div>
+                  <span class="contrib-amount" id="amtMarketing">+$8,144</span>
+                </div>
+                <div class="contrib-row" id="rowAdmin">
+                  <span class="contrib-name">Admin Impact</span>
+                  <div class="contrib-track"><div class="contrib-fill fill-admin" id="barAdmin" style="width: 0%;"></div></div>
+                  <span class="contrib-amount" id="amtAdmin">$0.00</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Strategic Advice Box -->
+            <div class="advisor-box">
+              <div class="advisor-icon">💡</div>
+              <div class="advisor-text">
+                <strong>Executive Insight:</strong> Every $10,000 shifted from Administration into R&D yields an estimated net gain of <strong>+$7,400 to +$7,500</strong> in bottom-line startup profitability.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 50 Startups Interactive Dataset Explorer -->
+    <section class="section dataset-section" id="dataset-section">
+      <div class="section-container">
+        <div class="section-header">
+          <span class="section-tag">Raw Data</span>
+          <h2 class="section-title">50 Startups Dataset Explorer</h2>
+          <p class="section-desc">Search, filter by state, and sort all 50 startup records used to train and validate our regression pipeline.</p>
+        </div>
+
+        <div class="dataset-card">
+          <!-- Filter and Search Toolbar -->
+          <div class="dataset-toolbar">
+            <div class="search-box">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input type="text" id="datasetSearch" placeholder="Search startup records (e.g. California, 165000)..." class="search-input">
+            </div>
+
+            <div class="filter-pills" id="stateFilterPills">
+              <button class="filter-pill active" data-state="all">All States (50)</button>
+              <button class="filter-pill" data-state="California">California (17)</button>
+              <button class="filter-pill" data-state="New York">New York (17)</button>
+              <button class="filter-pill" data-state="Florida">Florida (16)</button>
+            </div>
+          </div>
+
+          <!-- Dataset Statistics Summary Bar -->
+          <div class="dataset-stats-bar" id="datasetStatsBar">
+            <span>Showing <strong id="visibleCount">50</strong> of 50 Startups</span>
+            <span>Avg Profit: <strong id="avgProfitDisplay">$112,012.64</strong></span>
+            <span>Avg R&D: <strong id="avgRdDisplay">$73,721.62</strong></span>
+          </div>
+
+          <!-- Table -->
+          <div class="table-responsive">
+            <table class="data-table interactive-table" id="interactiveStartupsTable">
+              <thead>
+                <tr>
+                  <th data-sort="id">#</th>
+                  <th data-sort="rd">R&D Spend ($) <span class="sort-icon">⇅</span></th>
+                  <th data-sort="admin">Administration ($) <span class="sort-icon">⇅</span></th>
+                  <th data-sort="marketing">Marketing Spend ($) <span class="sort-icon">⇅</span></th>
+                  <th data-sort="state">State <span class="sort-icon">⇅</span></th>
+                  <th data-sort="profit">Profit ($) <span class="sort-icon">⇅</span></th>
+                </tr>
+              </thead>
+              <tbody id="startupsTableBody">
+                <!-- Dynamically populated via app.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modern Web Footer -->
+  <footer class="page-footer">
+    <div class="footer-container">
+      <div class="footer-col brand-col">
+        <div class="footer-brand">Startup<span class="brand-accent">Regression</span></div>
+        <p class="footer-desc">
+          Academic assignment and technical reference for 50 Startups Multiple Linear Regression and Forward Selection using the CRISP-DM framework.
+        </p>
+        <div class="tech-tags">
+          <span class="tech-tag">Python 3.11</span>
+          <span class="tech-tag">Scikit-Learn</span>
+          <span class="tech-tag">Pandas</span>
+          <span class="tech-tag">CRISP-DM</span>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Methodology</h4>
+        <ul class="footer-links">
+          <li><a href="#tabPhase1">Phase 1: Business Understanding</a></li>
+          <li><a href="#tabPhase2">Phase 2: Data Understanding</a></li>
+          <li><a href="#tabPhase3">Phase 3: Data Preparation</a></li>
+          <li><a href="#tabPhase4">Phase 4: Modeling</a></li>
+          <li><a href="#tabPhase5">Phase 5: Evaluation</a></li>
+          <li><a href="#tabPhase6">Phase 6: Deployment</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Artifacts & Deliverables</h4>
+        <ul class="footer-links">
+          <li><a href="outputs/forward_selection_results.csv" download>forward_selection_results.csv</a></li>
+          <li><a href="outputs/actual_vs_predicted_profit.png" target="_blank">actual_vs_predicted_profit.png</a></li>
+          <li><a href="startup_regression.py" target="_blank">startup_regression.py</a></li>
+          <li><a href="README.md" target="_blank">README.md (Technical Report)</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="footer-bottom-container">
+        <span>© 2026 startup_regression Project | Pair programmed with Antigravity AI</span>
+        <span>Built with HTML5, Vanilla CSS3 & Vanilla JavaScript</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Main JavaScript Application -->
+  <script src="app.js"></script>
+</body>
+</html>
