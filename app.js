@@ -1,9 +1,14 @@
 /**
- * 50 Startups Machine Learning Interactive Dashboard (CRISP-DM)
- * Main JavaScript Controller
+ * Machine Learning Regression Analytics Dashboard (CRISP-DM)
+ * Multi-Dataset Controller: 50 Startups & Boston Housing
+ * Pair programmed with Antigravity AI
  */
 
-// Embedded 50 Startups Dataset (Allows instant offline execution via file://)
+// ==========================================================================
+// 1. DATASETS DEFINITIONS
+// ==========================================================================
+
+// Embedded 50 Startups Dataset (Offline compatibility)
 const STARTUPS_DATA = [
   {"R&D Spend": 165349.2, "Administration": 136897.8, "Marketing Spend": 471784.1, "State": "New York", "Profit": 192261.83},
   {"R&D Spend": 162597.7, "Administration": 151377.59, "Marketing Spend": 443898.53, "State": "California", "Profit": 191792.06},
@@ -57,8 +62,8 @@ const STARTUPS_DATA = [
   {"R&D Spend": 0.0, "Administration": 116983.8, "Marketing Spend": 45173.06, "State": "California", "Profit": 14681.4}
 ];
 
-// Forward Selection Empirical Results Data
-const FS_DATA = [
+// 50 Startups Forward Selection Empirical Results
+const FS_DATA_STARTUPS = [
   { step: 1, feature: "R&D Spend", cvRmse: 9745.40, testRmse: 8274.87, testR2: 0.9465 },
   { step: 2, feature: "Marketing Spend", cvRmse: 9482.34, testRmse: 8198.80, testR2: 0.9474 },
   { step: 3, feature: "Administration", cvRmse: 9678.08, testRmse: 8803.78, testR2: 0.9394 },
@@ -66,71 +71,269 @@ const FS_DATA = [
   { step: 5, feature: "State_New York", cvRmse: 10158.66, testRmse: 9137.99, testR2: 0.9347 }
 ];
 
-// Empirical Model Coefficients (derived from 40-sample training set)
-const MODELS = {
+// Boston Housing Forward Selection Empirical Results (13 steps)
+const FS_DATA_BOSTON = [
+  { step: 1, feature: "lstat", cvRmse: 6.0468, testRmse: 6.8071, testR2: 0.4310 },
+  { step: 2, feature: "ptratio", cvRmse: 5.4163, testRmse: 7.1752, testR2: 0.3677 },
+  { step: 3, feature: "rm", cvRmse: 4.9392, testRmse: 6.4558, testR2: 0.4882 },
+  { step: 4, feature: "b", cvRmse: 4.8741, testRmse: 6.3836, testR2: 0.4996 },
+  { step: 5, feature: "chas", cvRmse: 4.8263, testRmse: 6.2939, testR2: 0.5135 },
+  { step: 6, feature: "dis", cvRmse: 4.7971, testRmse: 6.0854, testR2: 0.5452 },
+  { step: 7, feature: "nox", cvRmse: 4.6811, testRmse: 5.9729, testR2: 0.5619 },
+  { step: 8, feature: "crim", cvRmse: 4.6656, testRmse: 6.0156, testR2: 0.5556 },
+  { step: 9, feature: "zn", cvRmse: 4.6561, testRmse: 5.9582, testR2: 0.5640 },
+  { step: 10, feature: "indus", cvRmse: 4.6560, testRmse: 5.9707, testR2: 0.5622 },
+  { step: 11, feature: "rad", cvRmse: 4.6668, testRmse: 5.8583, testR2: 0.5785 },
+  { step: 12, feature: "tax", cvRmse: 4.6143, testRmse: 5.7802, testR2: 0.5897 },
+  { step: 13, feature: "age", cvRmse: 4.6493, testRmse: 5.7835, testR2: 0.5892 }
+];
+
+// 50 Startups Empirical Models
+const MODELS_STARTUPS = {
   optimal: {
     name: "Optimal 2-Feature Model (R&D + Marketing)",
     intercept: 46346.33876,
-    coef: {
-      rd: 0.788618,
-      marketing: 0.032577,
-      admin: 0.0,
-      stateFL: 0.0,
-      stateNY: 0.0
-    },
+    coef: { rd: 0.788618, marketing: 0.032577, admin: 0.0, stateFL: 0.0, stateNY: 0.0 },
     r2: 0.9474,
     rmse: 8198.80
   },
   full: {
     name: "Full 5-Feature Baseline Model",
     intercept: 42554.16762,
-    coef: {
-      rd: 0.773467,
-      marketing: 0.036610,
-      admin: 0.032885,
-      stateFL: -959.284,
-      stateNY: 699.369
-    },
+    coef: { rd: 0.773467, marketing: 0.036610, admin: 0.032885, stateFL: -959.284, stateNY: 699.369 },
     r2: 0.9347,
     rmse: 9137.99
   }
 };
 
+// Boston Housing Empirical Models
+const MODELS_BOSTON = {
+  optimal: {
+    name: "Optimal 12-Feature Model (without Age)",
+    intercept: 38.19538,
+    coef: {
+      lstat: -0.496990,
+      ptratio: -1.047631,
+      rm: 3.689463,
+      b: 0.008044,
+      chas: 2.335575,
+      dis: -1.373146,
+      nox: -16.394327,
+      crim: -0.119145,
+      zn: 0.045249,
+      indus: 0.005759,
+      rad: 0.245226,
+      tax: -0.011009,
+      age: 0.0
+    },
+    r2: 0.5897,
+    rmse: 5.7802
+  },
+  full: {
+    name: "Full 13-Feature Baseline Model",
+    intercept: 38.09169,
+    coef: {
+      crim: -0.119443,
+      zn: 0.044780,
+      indus: 0.005485,
+      chas: 2.340804,
+      nox: -16.123604,
+      rm: 3.708709,
+      age: -0.003121,
+      dis: -1.386397,
+      rad: 0.244178,
+      tax: -0.010990,
+      ptratio: -1.045921,
+      b: 0.008110,
+      lstat: -0.492793
+    },
+    r2: 0.5892,
+    rmse: 5.7835
+  },
+  core: {
+    name: "Core 3-Feature Hedonic Model (RM + LSTAT + PTRATIO)",
+    intercept: 24.03109,
+    coef: {
+      rm: 4.264947,
+      lstat: -0.575521,
+      ptratio: -1.136547
+    },
+    r2: 0.4882,
+    rmse: 6.4558
+  }
+};
+
+// Global App State
+let currentDataset = "startups"; // "startups" | "boston"
+
 /* ==========================================================================
    INITIALIZATION
    ========================================================================== */
 document.addEventListener("DOMContentLoaded", () => {
+  initProblemDropdown();
   initPhaseTabs();
   initForwardSelectionChart();
-  initSimulator();
-  initDatasetExplorer();
+  initStartupSimulator();
+  initBostonSimulator();
+  initStartupDatasetExplorer();
+  initBostonDatasetExplorer();
+
+  // Check URL hash on load
+  if (window.location.hash === "#boston") {
+    switchDataset("boston");
+  }
 });
 
 /* ==========================================================================
-   1. CRISP-DM PHASE TABS NAVIGATION
+   PROBLEM DROPDOWN WINDOW & DATASET SWITCHER
+   ========================================================================== */
+function initProblemDropdown() {
+  const triggers = document.querySelectorAll(".dropdown-trigger");
+  const windows = document.querySelectorAll(".dropdown-window");
+  const options = document.querySelectorAll(".dropdown-option");
+
+  // Toggle dropdown window
+  triggers.forEach(trigger => {
+    trigger.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const parentDropdown = trigger.closest(".problem-dropdown");
+      const targetWindow = parentDropdown ? parentDropdown.querySelector(".dropdown-window") : null;
+
+      // Close other open dropdowns first
+      windows.forEach(w => {
+        if (w !== targetWindow) {
+          w.classList.remove("open");
+          const otherTrigger = w.closest(".problem-dropdown")?.querySelector(".dropdown-trigger");
+          if (otherTrigger) otherTrigger.classList.remove("open");
+        }
+      });
+
+      if (targetWindow) {
+        const isOpen = targetWindow.classList.toggle("open");
+        trigger.classList.toggle("open", isOpen);
+        trigger.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      }
+    });
+  });
+
+  // Select problem from dropdown window options
+  options.forEach(opt => {
+    opt.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const targetDataset = opt.getAttribute("data-dataset");
+      if (targetDataset) {
+        switchDataset(targetDataset);
+      }
+      closeAllDropdowns();
+    });
+
+    // Keyboard accessibility (Enter or Space)
+    opt.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        const targetDataset = opt.getAttribute("data-dataset");
+        if (targetDataset) {
+          switchDataset(targetDataset);
+        }
+        closeAllDropdowns();
+      }
+    });
+  });
+
+  // Close dropdowns on outside click
+  document.addEventListener("click", () => {
+    closeAllDropdowns();
+  });
+
+  // Close dropdowns on Escape key
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      closeAllDropdowns();
+    }
+  });
+
+  function closeAllDropdowns() {
+    windows.forEach(w => w.classList.remove("open"));
+    triggers.forEach(t => {
+      t.classList.remove("open");
+      t.setAttribute("aria-expanded", "false");
+    });
+  }
+}
+
+function switchDataset(dataset) {
+  currentDataset = dataset;
+  const isBoston = dataset === "boston";
+
+  // 1. Update Dropdown Triggers in Navbar & Hero
+  const navIcon = document.getElementById("navProblemIcon");
+  const navTitle = document.getElementById("navProblemTitle");
+  const navBadge = document.getElementById("navProblemBadge");
+
+  const heroIcon = document.getElementById("heroProblemIcon");
+  const heroTitle = document.getElementById("heroProblemTitle");
+  const heroBadge = document.getElementById("heroProblemBadge");
+
+  if (navIcon) navIcon.textContent = isBoston ? "🏡" : "🚀";
+  if (navTitle) navTitle.textContent = isBoston ? "Problem 2: Boston Housing" : "Problem 1: 50 Startups";
+  if (navBadge) navBadge.textContent = isBoston ? "k=12 Optimal" : "k=2 Optimal";
+
+  if (heroIcon) heroIcon.textContent = isBoston ? "🏡" : "🚀";
+  if (heroTitle) heroTitle.textContent = isBoston ? "Problem 2: Boston Housing Valuation" : "Problem 1: 50 Startups Profitability";
+  if (heroBadge) heroBadge.textContent = isBoston ? "k=12 Optimal" : "k=2 Optimal";
+
+  // 2. Update Active Status on all Dropdown Options
+  document.querySelectorAll(".dropdown-option").forEach(opt => {
+    const isTarget = opt.getAttribute("data-dataset") === dataset;
+    opt.classList.toggle("active", isTarget);
+    opt.setAttribute("aria-selected", isTarget ? "true" : "false");
+  });
+
+  // 3. Toggle Content Blocks across all Sections
+  document.querySelectorAll('.dataset-content[data-dataset="startups"]').forEach(el => {
+    el.classList.toggle("hidden-dataset", isBoston);
+  });
+  document.querySelectorAll('.dataset-content[data-dataset="boston"]').forEach(el => {
+    el.classList.toggle("hidden-dataset", !isBoston);
+  });
+
+  // 4. Redraw Forward Selection Chart for the newly active dataset
+  if (typeof window.redrawFsChart === "function") {
+    window.redrawFsChart();
+  }
+}
+
+/* ==========================================================================
+   2. CRISP-DM PHASE TABS NAVIGATION
    ========================================================================== */
 function initPhaseTabs() {
-  const tabs = document.querySelectorAll(".phase-tab");
-  const panels = document.querySelectorAll(".phase-panel");
+  // Support phase tabs for both startups and boston
+  ["startups", "boston"].forEach(ds => {
+    const container = document.getElementById(`phaseTabContainer_${ds}`);
+    if (!container) return;
 
-  tabs.forEach(tab => {
-    tab.addEventListener("click", () => {
-      const targetPhase = tab.getAttribute("data-phase");
+    const tabs = container.querySelectorAll(".phase-tab");
+    tabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        const targetPhase = tab.getAttribute("data-phase");
+        const parentSection = container.closest(".dataset-content");
+        if (!parentSection) return;
 
-      tabs.forEach(t => t.classList.remove("active"));
-      panels.forEach(p => p.classList.remove("active"));
+        parentSection.querySelectorAll(".phase-tab").forEach(t => t.classList.remove("active"));
+        parentSection.querySelectorAll(".phase-panel").forEach(p => p.classList.remove("active"));
 
-      tab.classList.add("active");
-      const targetPanel = document.getElementById(`panelPhase${targetPhase}`);
-      if (targetPanel) {
-        targetPanel.classList.add("active");
-      }
+        tab.classList.add("active");
+        const targetPanel = document.getElementById(`panelPhase${targetPhase}_${ds}`);
+        if (targetPanel) {
+          targetPanel.classList.add("active");
+        }
+      });
     });
   });
 }
 
 /* ==========================================================================
-   2. FORWARD SELECTION CANVAS INTERACTIVE CHART
+   3. FORWARD SELECTION CANVAS INTERACTIVE CHART (DUAL DATASET)
    ========================================================================== */
 function initForwardSelectionChart() {
   const canvas = document.getElementById("fsChartCanvas");
@@ -138,8 +341,7 @@ function initForwardSelectionChart() {
 
   const ctx = canvas.getContext("2d");
 
-  // Handle High-DPI screens (Retina)
-  function resizeCanvas() {
+  function resizeAndDraw() {
     const rect = canvas.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
     canvas.width = rect.width * dpr;
@@ -151,106 +353,111 @@ function initForwardSelectionChart() {
   function drawChart(w, h) {
     ctx.clearRect(0, 0, w, h);
 
-    const padding = { top: 40, right: 60, bottom: 50, left: 70 };
+    const isBoston = currentDataset === "boston";
+    const data = isBoston ? FS_DATA_BOSTON : FS_DATA_STARTUPS;
+    const optimalIdx = isBoston ? 11 : 1; // Step 12 for Boston, Step 2 for Startups
+
+    const padding = { top: 40, right: 65, bottom: 55, left: 75 };
     const chartW = w - padding.left - padding.right;
     const chartH = h - padding.top - padding.bottom;
 
-    // Y Axis 1 (RMSE): Min 7,800 to Max 10,500
-    const minRmse = 7800;
-    const maxRmse = 10600;
+    // Y Axis ranges
+    const minRmse = isBoston ? 4.2 : 7800;
+    const maxRmse = isBoston ? 7.5 : 10600;
     const getY_RMSE = val => padding.top + chartH - ((val - minRmse) / (maxRmse - minRmse)) * chartH;
 
-    // Y Axis 2 (R²): Min 0.930 to Max 0.950
-    const minR2 = 0.930;
-    const maxR2 = 0.950;
+    const minR2 = isBoston ? 0.30 : 0.930;
+    const maxR2 = isBoston ? 0.65 : 0.950;
     const getY_R2 = val => padding.top + chartH - ((val - minR2) / (maxR2 - minR2)) * chartH;
 
-    // X Axis: 5 steps (1 to 5)
-    const getX = stepIndex => padding.left + (stepIndex / (FS_DATA.length - 1)) * chartW;
+    const getX = stepIndex => padding.left + (stepIndex / (data.length - 1)) * chartW;
 
-    // 1. Draw horizontal grid lines
+    // 1. Draw horizontal grid lines & Left Y labels (RMSE)
     ctx.strokeStyle = "rgba(255, 255, 255, 0.06)";
     ctx.lineWidth = 1;
-    for (let rmse = 8000; rmse <= 10500; rmse += 500) {
-      const y = getY_RMSE(rmse);
+
+    const numTicks = 6;
+    for (let i = 0; i <= numTicks; i++) {
+      const val = minRmse + (i / numTicks) * (maxRmse - minRmse);
+      const y = getY_RMSE(val);
+
       ctx.beginPath();
       ctx.moveTo(padding.left, y);
       ctx.lineTo(w - padding.right, y);
       ctx.stroke();
 
-      // Left Y-axis label (RMSE)
       ctx.fillStyle = "#64748b";
       ctx.font = "11px JetBrains Mono, monospace";
       ctx.textAlign = "right";
-      ctx.fillText(`$${rmse.toLocaleString()}`, padding.left - 10, y + 4);
+      const lbl = isBoston ? `$${val.toFixed(1)}k` : `$${Math.round(val).toLocaleString()}`;
+      ctx.fillText(lbl, padding.left - 10, y + 4);
     }
 
     // Right Y-axis labels (R²)
-    for (let r2 = 0.930; r2 <= 0.950; r2 += 0.005) {
+    for (let i = 0; i <= numTicks; i++) {
+      const r2 = minR2 + (i / numTicks) * (maxR2 - minR2);
       const y = getY_R2(r2);
       ctx.fillStyle = "#a855f7";
       ctx.font = "11px JetBrains Mono, monospace";
       ctx.textAlign = "left";
-      ctx.fillText(r2.toFixed(3), w - padding.right + 10, y + 4);
+      ctx.fillText(r2.toFixed(isBoston ? 2 : 3), w - padding.right + 10, y + 4);
     }
 
     // 2. Draw vertical grid & X labels
-    FS_DATA.forEach((item, idx) => {
+    data.forEach((item, idx) => {
       const x = getX(idx);
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.05)";
+      ctx.strokeStyle = idx === optimalIdx ? "rgba(16, 185, 129, 0.25)" : "rgba(255, 255, 255, 0.04)";
+      ctx.lineWidth = idx === optimalIdx ? 2 : 1;
       ctx.beginPath();
       ctx.moveTo(x, padding.top);
       ctx.lineTo(x, padding.top + chartH);
       ctx.stroke();
 
-      // X Label
-      ctx.fillStyle = idx === 1 ? "#10b981" : "#94a3b8";
-      ctx.font = idx === 1 ? "bold 12px Inter, sans-serif" : "12px Inter, sans-serif";
+      // Step text
+      ctx.fillStyle = idx === optimalIdx ? "#10b981" : "#94a3b8";
+      ctx.font = idx === optimalIdx ? "bold 11px Outfit, sans-serif" : "10px Outfit, sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText(`k = ${item.step}`, x, padding.top + chartH + 20);
-      ctx.font = "10px Inter, sans-serif";
-      ctx.fillStyle = "#64748b";
-      ctx.fillText(item.feature, x, padding.top + chartH + 34);
+      ctx.fillText(`k=${item.step}`, x, padding.top + chartH + 20);
+
+      // Feature text (rotated or compact if many features)
+      ctx.fillStyle = idx === optimalIdx ? "#10b981" : "#64748b";
+      ctx.font = "9px JetBrains Mono, monospace";
+      const featText = isBoston ? item.feature : `+${item.feature.split(" ")[0]}`;
+      ctx.fillText(featText, x, padding.top + chartH + 34);
     });
 
-    // 3. Highlight Step 2 Optimal Vertical Band
-    const optX = getX(1);
-    ctx.fillStyle = "rgba(16, 185, 129, 0.08)";
-    ctx.fillRect(optX - 35, padding.top, 70, chartH);
-    ctx.strokeStyle = "rgba(16, 185, 129, 0.35)";
-    ctx.lineWidth = 1;
-    ctx.setLineDash([4, 4]);
-    ctx.strokeRect(optX - 35, padding.top, 70, chartH);
-    ctx.setLineDash([]);
+    // 3. Highlight Optimal Vertical Band
+    const optX = getX(optimalIdx);
+    ctx.fillStyle = "rgba(16, 185, 129, 0.07)";
+    const bandWidth = chartW / data.length;
+    ctx.fillRect(optX - bandWidth / 2, padding.top, bandWidth, chartH);
 
-    // 4. Draw Line Function
-    function drawCurve(dataKey, color, isR2 = false) {
-      ctx.beginPath();
+    // Helper: draw continuous line with markers
+    function drawCurve(key, color, isR2 = false) {
       ctx.strokeStyle = color;
       ctx.lineWidth = 2.5;
+      ctx.beginPath();
 
-      FS_DATA.forEach((d, idx) => {
+      data.forEach((item, idx) => {
         const x = getX(idx);
-        const y = isR2 ? getY_R2(d[dataKey]) : getY_RMSE(d[dataKey]);
+        const y = isR2 ? getY_R2(item[key]) : getY_RMSE(item[key]);
         if (idx === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
       });
       ctx.stroke();
 
-      // Draw point markers
-      FS_DATA.forEach((d, idx) => {
+      // Points
+      data.forEach((item, idx) => {
         const x = getX(idx);
-        const y = isR2 ? getY_R2(d[dataKey]) : getY_RMSE(d[dataKey]);
+        const y = isR2 ? getY_R2(item[key]) : getY_RMSE(item[key]);
+        const isOpt = idx === optimalIdx;
 
-        ctx.fillStyle = "#0e121e";
-        ctx.beginPath();
-        ctx.arc(x, y, 5, 0, Math.PI * 2);
-        ctx.fill();
-
+        ctx.fillStyle = isOpt ? color : "#07090e";
         ctx.strokeStyle = color;
-        ctx.lineWidth = 2.5;
+        ctx.lineWidth = isOpt ? 3 : 2;
         ctx.beginPath();
-        ctx.arc(x, y, idx === 1 ? 6.5 : 4.5, 0, Math.PI * 2);
+        ctx.arc(x, y, isOpt ? 6 : 4, 0, Math.PI * 2);
+        ctx.fill();
         ctx.stroke();
       });
     }
@@ -265,20 +472,23 @@ function initForwardSelectionChart() {
     drawCurve("testR2", "#a855f7", true);
   }
 
-  window.addEventListener("resize", resizeCanvas);
-  resizeCanvas();
+  window.addEventListener("resize", resizeAndDraw);
+  window.redrawFsChart = resizeAndDraw;
+  resizeAndDraw();
 }
 
 /* ==========================================================================
-   3. INTERACTIVE STARTUP PROFIT SIMULATOR
+   4. 50 STARTUPS INTERACTIVE PROFIT SIMULATOR
    ========================================================================== */
-function initSimulator() {
+function initStartupSimulator() {
   const rangeRd = document.getElementById("rangeRd");
   const rangeMarketing = document.getElementById("rangeMarketing");
   const rangeAdmin = document.getElementById("rangeAdmin");
   const selectState = document.getElementById("selectState");
   const modelSelect = document.getElementById("simModelSelect");
   const btnReset = document.getElementById("btnResetSim");
+
+  if (!rangeRd) return;
 
   const displayRd = document.getElementById("displayRd");
   const displayMarketing = document.getElementById("displayMarketing");
@@ -316,27 +526,22 @@ function initSimulator() {
     const state = selectState.value;
     const mode = modelSelect.value;
 
-    // Update display labels
     displayRd.textContent = formatMoney(rd);
     displayMarketing.textContent = formatMoney(marketing);
     displayAdmin.textContent = formatMoney(admin);
 
-    // Calculate Optimal Model (k=2)
-    // Formula: 46346.33876 + 0.788618 * R&D + 0.032577 * Marketing
-    const optProfit = MODELS.optimal.intercept +
-                      MODELS.optimal.coef.rd * rd +
-                      MODELS.optimal.coef.marketing * marketing;
+    const optProfit = MODELS_STARTUPS.optimal.intercept +
+                      MODELS_STARTUPS.optimal.coef.rd * rd +
+                      MODELS_STARTUPS.optimal.coef.marketing * marketing;
 
-    // Calculate Full Model (k=5)
-    // Formula: 42554.16762 + 0.773467 * R&D + 0.032885 * Admin + 0.036610 * Marketing + State
     let statePenalty = 0;
-    if (state === "Florida") statePenalty = MODELS.full.coef.stateFL;
-    else if (state === "New York") statePenalty = MODELS.full.coef.stateNY;
+    if (state === "Florida") statePenalty = MODELS_STARTUPS.full.coef.stateFL;
+    else if (state === "New York") statePenalty = MODELS_STARTUPS.full.coef.stateNY;
 
-    const fullProfit = MODELS.full.intercept +
-                       MODELS.full.coef.rd * rd +
-                       MODELS.full.coef.admin * admin +
-                       MODELS.full.coef.marketing * marketing +
+    const fullProfit = MODELS_STARTUPS.full.intercept +
+                       MODELS_STARTUPS.full.coef.rd * rd +
+                       MODELS_STARTUPS.full.coef.admin * admin +
+                       MODELS_STARTUPS.full.coef.marketing * marketing +
                        statePenalty;
 
     const totalSpend = rd + marketing + admin;
@@ -345,7 +550,6 @@ function initSimulator() {
     if (mode === "compare") {
       singleResultBox.classList.add("hidden");
       dualCompareBox.classList.remove("hidden");
-
       compValOptimal.textContent = formatMoney(optProfit);
       compValFull.textContent = formatMoney(fullProfit);
       adminNotice.textContent = "Admin & State included only in Full Model comparison.";
@@ -360,10 +564,9 @@ function initSimulator() {
         valProfitMargin.textContent = `Estimated Profit / Spend: ${margin}%`;
         adminNotice.textContent = "Ignored in Optimal 2-feature model to minimize prediction variance.";
 
-        // Waterfall attribution
-        const baseImpact = MODELS.optimal.intercept;
-        const rdImpact = MODELS.optimal.coef.rd * rd;
-        const mktImpact = MODELS.optimal.coef.marketing * marketing;
+        const baseImpact = MODELS_STARTUPS.optimal.intercept;
+        const rdImpact = MODELS_STARTUPS.optimal.coef.rd * rd;
+        const mktImpact = MODELS_STARTUPS.optimal.coef.marketing * marketing;
 
         amtBase.textContent = `+${formatMoney(baseImpact)}`;
         amtRd.textContent = `+${formatMoney(rdImpact)}`;
@@ -382,11 +585,10 @@ function initSimulator() {
         valProfitMargin.textContent = `Estimated Profit / Spend: ${margin}%`;
         adminNotice.textContent = "Active in Full Baseline model.";
 
-        // Waterfall attribution
-        const baseImpact = MODELS.full.intercept;
-        const rdImpact = MODELS.full.coef.rd * rd;
-        const mktImpact = MODELS.full.coef.marketing * marketing;
-        const admImpact = MODELS.full.coef.admin * admin;
+        const baseImpact = MODELS_STARTUPS.full.intercept;
+        const rdImpact = MODELS_STARTUPS.full.coef.rd * rd;
+        const mktImpact = MODELS_STARTUPS.full.coef.marketing * marketing;
+        const admImpact = MODELS_STARTUPS.full.coef.admin * admin;
 
         amtBase.textContent = `+${formatMoney(baseImpact)}`;
         amtRd.textContent = `+${formatMoney(rdImpact)}`;
@@ -402,7 +604,6 @@ function initSimulator() {
     }
   }
 
-  // Event Listeners
   [rangeRd, rangeMarketing, rangeAdmin, selectState, modelSelect].forEach(el => {
     el.addEventListener("input", updatePrediction);
     el.addEventListener("change", updatePrediction);
@@ -417,21 +618,241 @@ function initSimulator() {
     updatePrediction();
   });
 
-  // Initial Calculation
   updatePrediction();
 }
 
 /* ==========================================================================
-   4. INTERACTIVE 50 STARTUPS DATASET EXPLORER
+   5. BOSTON HOUSING LIVE VALUATION ESTIMATOR
    ========================================================================== */
-function initDatasetExplorer() {
+function initBostonSimulator() {
+  const rangeRm = document.getElementById("bostonRangeRm");
+  const rangeLstat = document.getElementById("bostonRangeLstat");
+  const rangePtratio = document.getElementById("bostonRangePtratio");
+  const rangeCrim = document.getElementById("bostonRangeCrim");
+  const rangeTax = document.getElementById("bostonRangeTax");
+  const rangeDis = document.getElementById("bostonRangeDis");
+  const rangeNox = document.getElementById("bostonRangeNox");
+  const checkChas = document.getElementById("bostonCheckChas");
+  const modelSelect = document.getElementById("bostonModelSelect");
+  const btnReset = document.getElementById("btnResetBostonSim");
+
+  if (!rangeRm) return;
+
+  const displayRm = document.getElementById("displayBostonRm");
+  const displayLstat = document.getElementById("displayBostonLstat");
+  const displayPtratio = document.getElementById("displayBostonPtratio");
+  const displayCrim = document.getElementById("displayBostonCrim");
+  const displayTax = document.getElementById("displayBostonTax");
+  const displayDis = document.getElementById("displayBostonDis");
+  const displayNox = document.getElementById("displayBostonNox");
+
+  const singleResultBox = document.getElementById("bostonSingleResultBox");
+  const dualCompareBox = document.getElementById("bostonDualCompareBox");
+  const resModelLabel = document.getElementById("bostonResModelLabel");
+  const valPredictedPrice = document.getElementById("valBostonPredictedPrice");
+  const valConfidenceBand = document.getElementById("valBostonConfidenceBand");
+  const valTaxAssessment = document.getElementById("valBostonTaxAssessment");
+
+  const compValOptimal = document.getElementById("compBostonValOptimal");
+  const compValFull = document.getElementById("compBostonValFull");
+
+  const amtBase = document.getElementById("amtBostonBase");
+  const amtRm = document.getElementById("amtBostonRm");
+  const amtLstat = document.getElementById("amtBostonLstat");
+  const amtPtratio = document.getElementById("amtBostonPtratio");
+  const amtChas = document.getElementById("amtBostonChas");
+
+  const barBase = document.getElementById("barBostonBase");
+  const barRm = document.getElementById("barBostonRm");
+  const barLstat = document.getElementById("barBostonLstat");
+  const barPtratio = document.getElementById("barBostonPtratio");
+  const barChas = document.getElementById("barBostonChas");
+
+  function formatDollar(valK) {
+    const dollars = Math.round(valK * 1000);
+    return `$${dollars.toLocaleString()} ($${valK.toFixed(2)}k)`;
+  }
+
+  function updateBostonPrediction() {
+    const rm = parseFloat(rangeRm.value);
+    const lstat = parseFloat(rangeLstat.value);
+    const ptratio = parseFloat(rangePtratio.value);
+    const crim = parseFloat(rangeCrim.value);
+    const tax = parseFloat(rangeTax.value);
+    const dis = parseFloat(rangeDis.value);
+    const nox = parseFloat(rangeNox.value);
+    const chas = checkChas.checked ? 1 : 0;
+    const mode = modelSelect.value;
+
+    displayRm.textContent = `${rm.toFixed(1)} rooms`;
+    displayLstat.textContent = `${lstat.toFixed(1)}%`;
+    displayPtratio.textContent = `${ptratio.toFixed(1)}:1`;
+    displayCrim.textContent = `${crim.toFixed(2)}`;
+    displayTax.textContent = `$${Math.round(tax)}`;
+    displayDis.textContent = `${dis.toFixed(1)} mi`;
+    displayNox.textContent = `${nox.toFixed(2)} ppm`;
+
+    // Fixed default medians for remaining features (zn=11.36, indus=11.14, rad=9.5, b=356.67, age=68.57)
+    const zn = 11.36;
+    const indus = 11.14;
+    const rad = 9.5;
+    const b = 356.67;
+    const age = 68.57;
+
+    // Optimal 12-feature model
+    const optPriceK = MODELS_BOSTON.optimal.intercept +
+      MODELS_BOSTON.optimal.coef.rm * rm +
+      MODELS_BOSTON.optimal.coef.lstat * lstat +
+      MODELS_BOSTON.optimal.coef.ptratio * ptratio +
+      MODELS_BOSTON.optimal.coef.crim * crim +
+      MODELS_BOSTON.optimal.coef.tax * tax +
+      MODELS_BOSTON.optimal.coef.dis * dis +
+      MODELS_BOSTON.optimal.coef.nox * nox +
+      MODELS_BOSTON.optimal.coef.chas * chas +
+      MODELS_BOSTON.optimal.coef.zn * zn +
+      MODELS_BOSTON.optimal.coef.indus * indus +
+      MODELS_BOSTON.optimal.coef.rad * rad +
+      MODELS_BOSTON.optimal.coef.b * b;
+
+    // Full 13-feature model
+    const fullPriceK = MODELS_BOSTON.full.intercept +
+      MODELS_BOSTON.full.coef.rm * rm +
+      MODELS_BOSTON.full.coef.lstat * lstat +
+      MODELS_BOSTON.full.coef.ptratio * ptratio +
+      MODELS_BOSTON.full.coef.crim * crim +
+      MODELS_BOSTON.full.coef.tax * tax +
+      MODELS_BOSTON.full.coef.dis * dis +
+      MODELS_BOSTON.full.coef.nox * nox +
+      MODELS_BOSTON.full.coef.chas * chas +
+      MODELS_BOSTON.full.coef.zn * zn +
+      MODELS_BOSTON.full.coef.indus * indus +
+      MODELS_BOSTON.full.coef.rad * rad +
+      MODELS_BOSTON.full.coef.b * b +
+      MODELS_BOSTON.full.coef.age * age;
+
+    // Core 3-feature model
+    const corePriceK = MODELS_BOSTON.core.intercept +
+      MODELS_BOSTON.core.coef.rm * rm +
+      MODELS_BOSTON.core.coef.lstat * lstat +
+      MODELS_BOSTON.core.coef.ptratio * ptratio;
+
+    // Bound price between $5k and $50k (dataset boundaries)
+    const clamp = val => Math.max(5.0, Math.min(50.0, val));
+    const safeOptK = clamp(optPriceK);
+    const safeFullK = clamp(fullPriceK);
+    const safeCoreK = clamp(corePriceK);
+
+    valTaxAssessment.textContent = `Est. Property Tax: $${Math.round((safeOptK * 1000 * (tax / 10000))).toLocaleString()}/yr`;
+
+    if (mode === "compare") {
+      singleResultBox.classList.add("hidden");
+      dualCompareBox.classList.remove("hidden");
+      compValOptimal.textContent = `$${Math.round(safeOptK * 1000).toLocaleString()}`;
+      compValFull.textContent = `$${Math.round(safeFullK * 1000).toLocaleString()}`;
+    } else {
+      singleResultBox.classList.remove("hidden");
+      dualCompareBox.classList.add("hidden");
+
+      let activePriceK = safeOptK;
+      if (mode === "full") {
+        resModelLabel.textContent = "Projected Median Home Value (Full 13-Feature Model)";
+        activePriceK = safeFullK;
+      } else if (mode === "core") {
+        resModelLabel.textContent = "Projected Median Home Value (Core 3-Feature Model)";
+        activePriceK = safeCoreK;
+      } else {
+        resModelLabel.textContent = "Projected Median Home Value (Optimal 12-Feature Model)";
+        activePriceK = safeOptK;
+      }
+
+      valPredictedPrice.textContent = formatDollar(activePriceK);
+      const lowBand = Math.max(5.0, activePriceK - 5.78);
+      const highBand = Math.min(50.0, activePriceK + 5.78);
+      valConfidenceBand.textContent = `95% Confidence Band: $${Math.round(lowBand * 1000).toLocaleString()} – $${Math.round(highBand * 1000).toLocaleString()}`;
+
+      // Attribution
+      const baseImpact = MODELS_BOSTON.optimal.intercept;
+      const rmImpact = MODELS_BOSTON.optimal.coef.rm * rm;
+      const lstatImpact = MODELS_BOSTON.optimal.coef.lstat * lstat;
+      const ptratioImpact = MODELS_BOSTON.optimal.coef.ptratio * ptratio;
+      const chasImpact = MODELS_BOSTON.optimal.coef.chas * chas;
+
+      amtBase.textContent = `+$${Math.round(baseImpact * 1000).toLocaleString()}`;
+      amtRm.textContent = `+$${Math.round(rmImpact * 1000).toLocaleString()}`;
+      amtLstat.textContent = `${lstatImpact < 0 ? "-" : "+"}$${Math.round(Math.abs(lstatImpact) * 1000).toLocaleString()}`;
+      amtPtratio.textContent = `${ptratioImpact < 0 ? "-" : "+"}$${Math.round(Math.abs(ptratioImpact) * 1000).toLocaleString()}`;
+      amtChas.textContent = chas ? `+$${Math.round(chasImpact * 1000).toLocaleString()}` : "$0 (Inland)";
+
+      const maxImpact = Math.max(Math.abs(baseImpact), Math.abs(rmImpact), Math.abs(lstatImpact), Math.abs(ptratioImpact), 1);
+      barBase.style.width = `${Math.min(100, (Math.abs(baseImpact) / maxImpact) * 100)}%`;
+      barRm.style.width = `${Math.min(100, (Math.abs(rmImpact) / maxImpact) * 100)}%`;
+      barLstat.style.width = `${Math.min(100, (Math.abs(lstatImpact) / maxImpact) * 100)}%`;
+      barPtratio.style.width = `${Math.min(100, (Math.abs(ptratioImpact) / maxImpact) * 100)}%`;
+      barChas.style.width = chas ? `${Math.min(100, (Math.abs(chasImpact) / maxImpact) * 100)}%` : "0%";
+    }
+  }
+
+  // Presets
+  const presets = {
+    luxury: { rm: 8.0, lstat: 3.2, ptratio: 14.5, crim: 0.05, tax: 310, dis: 2.2, nox: 0.45, chas: true },
+    suburban: { rm: 6.8, lstat: 7.5, ptratio: 16.5, crim: 0.20, tax: 280, dis: 5.5, nox: 0.43, chas: false },
+    urban: { rm: 6.0, lstat: 14.0, ptratio: 19.0, crim: 3.50, tax: 450, dis: 3.2, nox: 0.54, chas: false },
+    industrial: { rm: 5.2, lstat: 24.0, ptratio: 20.2, crim: 12.00, tax: 666, dis: 2.1, nox: 0.69, chas: false }
+  };
+
+  document.querySelectorAll(".preset-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const presetKey = btn.getAttribute("data-preset");
+      const p = presets[presetKey];
+      if (!p) return;
+
+      rangeRm.value = p.rm;
+      rangeLstat.value = p.lstat;
+      rangePtratio.value = p.ptratio;
+      rangeCrim.value = p.crim;
+      rangeTax.value = p.tax;
+      rangeDis.value = p.dis;
+      rangeNox.value = p.nox;
+      checkChas.checked = p.chas;
+      modelSelect.value = "optimal";
+      updateBostonPrediction();
+    });
+  });
+
+  [rangeRm, rangeLstat, rangePtratio, rangeCrim, rangeTax, rangeDis, rangeNox, checkChas, modelSelect].forEach(el => {
+    el.addEventListener("input", updateBostonPrediction);
+    el.addEventListener("change", updateBostonPrediction);
+  });
+
+  btnReset.addEventListener("click", () => {
+    rangeRm.value = 6.2;
+    rangeLstat.value = 12.0;
+    rangePtratio.value = 18.5;
+    rangeCrim.value = 3.6;
+    rangeTax.value = 400;
+    rangeDis.value = 3.8;
+    rangeNox.value = 0.55;
+    checkChas.checked = false;
+    modelSelect.value = "optimal";
+    updateBostonPrediction();
+  });
+
+  updateBostonPrediction();
+}
+
+/* ==========================================================================
+   6. 50 STARTUPS DATASET EXPLORER
+   ========================================================================== */
+function initStartupDatasetExplorer() {
   const tableBody = document.getElementById("startupsTableBody");
   const searchInput = document.getElementById("datasetSearch");
-  const filterPills = document.querySelectorAll(".filter-pill");
+  const filterPills = document.querySelectorAll("#stateFilterPills .filter-pill");
   const visibleCount = document.getElementById("visibleCount");
   const avgProfitDisplay = document.getElementById("avgProfitDisplay");
   const avgRdDisplay = document.getElementById("avgRdDisplay");
   const headers = document.querySelectorAll("#interactiveStartupsTable th");
+
+  if (!tableBody) return;
 
   let currentFilter = "all";
   let searchQuery = "";
@@ -445,85 +866,61 @@ function initDatasetExplorer() {
   function renderTable() {
     let filtered = STARTUPS_DATA.map((item, idx) => ({ ...item, id: idx + 1 }));
 
-    // Apply State Filter
     if (currentFilter !== "all") {
       filtered = filtered.filter(row => row.State === currentFilter);
     }
 
-    // Apply Search Query
     if (searchQuery.trim() !== "") {
       const q = searchQuery.toLowerCase();
-      filtered = filtered.filter(row => {
-        return (
-          row.State.toLowerCase().includes(q) ||
-          row["R&D Spend"].toString().includes(q) ||
-          row.Administration.toString().includes(q) ||
-          row["Marketing Spend"].toString().includes(q) ||
-          row.Profit.toString().includes(q)
-        );
-      });
+      filtered = filtered.filter(row =>
+        row.State.toLowerCase().includes(q) ||
+        row["R&D Spend"].toString().includes(q) ||
+        row["Profit"].toString().includes(q)
+      );
     }
 
-    // Apply Sorting
+    // Sort
     filtered.sort((a, b) => {
-      let valA, valB;
-      if (sortField === "id") { valA = a.id; valB = b.id; }
-      else if (sortField === "rd") { valA = a["R&D Spend"]; valB = b["R&D Spend"]; }
-      else if (sortField === "admin") { valA = a.Administration; valB = b.Administration; }
+      let valA = a[sortField];
+      let valB = b[sortField];
+      if (sortField === "rd") { valA = a["R&D Spend"]; valB = b["R&D Spend"]; }
+      else if (sortField === "admin") { valA = a["Administration"]; valB = b["Administration"]; }
       else if (sortField === "marketing") { valA = a["Marketing Spend"]; valB = b["Marketing Spend"]; }
-      else if (sortField === "state") { valA = a.State; valB = b.State; }
-      else if (sortField === "profit") { valA = a.Profit; valB = b.Profit; }
+      else if (sortField === "profit") { valA = a["Profit"]; valB = b["Profit"]; }
+      else if (sortField === "state") { valA = a["State"]; valB = b["State"]; }
 
       if (valA < valB) return sortDirection === "asc" ? -1 : 1;
       if (valA > valB) return sortDirection === "asc" ? 1 : -1;
       return 0;
     });
 
-    // Populate Table
     tableBody.innerHTML = "";
     if (filtered.length === 0) {
-      tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 30px;">No startups found matching criteria.</td></tr>`;
-    } else {
-      filtered.forEach(row => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td class="font-mono text-muted">${row.id}</td>
-          <td class="font-mono">${formatCurrency(row["R&D Spend"])}</td>
-          <td class="font-mono">${formatCurrency(row.Administration)}</td>
-          <td class="font-mono">${formatCurrency(row["Marketing Spend"])}</td>
-          <td><span class="badge ${getStateBadgeClass(row.State)}">${row.State}</span></td>
-          <td class="font-mono text-green font-bold"><strong>${formatCurrency(row.Profit)}</strong></td>
-        `;
-        tableBody.appendChild(tr);
-      });
+      tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:32px; color:var(--text-muted)">No matching startup records found.</td></tr>`;
+      visibleCount.textContent = "0";
+      return;
     }
 
-    // Update Stats Summary
     visibleCount.textContent = filtered.length;
-    if (filtered.length > 0) {
-      const totalProfit = filtered.reduce((acc, r) => acc + r.Profit, 0);
-      const totalRd = filtered.reduce((acc, r) => acc + r["R&D Spend"], 0);
-      avgProfitDisplay.textContent = formatCurrency(totalProfit / filtered.length);
-      avgRdDisplay.textContent = formatCurrency(totalRd / filtered.length);
-    } else {
-      avgProfitDisplay.textContent = "$0.00";
-      avgRdDisplay.textContent = "$0.00";
-    }
+    const avgProfit = filtered.reduce((acc, cur) => acc + cur["Profit"], 0) / filtered.length;
+    const avgRd = filtered.reduce((acc, cur) => acc + cur["R&D Spend"], 0) / filtered.length;
+    avgProfitDisplay.textContent = formatCurrency(avgProfit);
+    avgRdDisplay.textContent = formatCurrency(avgRd);
+
+    filtered.forEach(row => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><span class="row-id">#${row.id}</span></td>
+        <td class="font-mono text-cyan">${formatCurrency(row["R&D Spend"])}</td>
+        <td class="font-mono">${formatCurrency(row["Administration"])}</td>
+        <td class="font-mono text-purple">${formatCurrency(row["Marketing Spend"])}</td>
+        <td><span class="state-pill state-${row.State.toLowerCase().replace(" ", "")}">${row.State}</span></td>
+        <td class="font-mono text-green"><strong>${formatCurrency(row["Profit"])}</strong></td>
+      `;
+      tableBody.appendChild(tr);
+    });
   }
 
-  function getStateBadgeClass(state) {
-    if (state === "California") return "badge-accent";
-    if (state === "New York") return "pill-purple";
-    return "pill-green";
-  }
-
-  // Search input handler
-  searchInput.addEventListener("input", e => {
-    searchQuery = e.target.value;
-    renderTable();
-  });
-
-  // Filter pills handler
   filterPills.forEach(pill => {
     pill.addEventListener("click", () => {
       filterPills.forEach(p => p.classList.remove("active"));
@@ -533,10 +930,15 @@ function initDatasetExplorer() {
     });
   });
 
-  // Sorting header click handler
+  searchInput.addEventListener("input", e => {
+    searchQuery = e.target.value;
+    renderTable();
+  });
+
   headers.forEach(th => {
     th.addEventListener("click", () => {
       const field = th.getAttribute("data-sort");
+      if (!field) return;
       if (sortField === field) {
         sortDirection = sortDirection === "asc" ? "desc" : "asc";
       } else {
@@ -547,6 +949,147 @@ function initDatasetExplorer() {
     });
   });
 
-  // Initial render
+  renderTable();
+}
+
+/* ==========================================================================
+   7. BOSTON HOUSING DATASET EXPLORER (506 CENSUS TRACTS)
+   ========================================================================== */
+function initBostonDatasetExplorer() {
+  const tableBody = document.getElementById("bostonTableBody");
+  const searchInput = document.getElementById("bostonDatasetSearch");
+  const filterPills = document.querySelectorAll("#bostonFilterPills .filter-pill");
+  const visibleCount = document.getElementById("bostonVisibleCount");
+  const avgPriceDisplay = document.getElementById("bostonAvgPriceDisplay");
+  const avgRoomsDisplay = document.getElementById("bostonAvgRoomsDisplay");
+  const avgCrimDisplay = document.getElementById("bostonAvgCrimDisplay");
+  const headers = document.querySelectorAll("#interactiveBostonTable th");
+
+  if (!tableBody) return;
+
+  // Use embedded BOSTON_DATA (from boston_data.js)
+  const rawData = typeof BOSTON_DATA !== "undefined" ? BOSTON_DATA : [];
+
+  let currentFilter = "all";
+  let searchQuery = "";
+  let sortField = "id";
+  let sortDirection = "asc";
+
+  function renderTable() {
+    let filtered = rawData.map((item, idx) => ({ ...item, id: idx + 1 }));
+
+    // Apply Filter
+    if (currentFilter === "river") {
+      filtered = filtered.filter(row => row.chas === 1);
+    } else if (currentFilter === "inland") {
+      filtered = filtered.filter(row => row.chas === 0);
+    } else if (currentFilter === "luxury") {
+      filtered = filtered.filter(row => row.medv >= 30.0);
+    } else if (currentFilter === "affordable") {
+      filtered = filtered.filter(row => row.medv < 20.0);
+    }
+
+    // Apply Search
+    if (searchQuery.trim() !== "") {
+      const q = searchQuery.toLowerCase();
+      filtered = filtered.filter(row =>
+        row.id.toString().includes(q) ||
+        row.rm.toString().includes(q) ||
+        row.medv.toString().includes(q) ||
+        row.crim.toString().includes(q) ||
+        row.lstat.toString().includes(q)
+      );
+    }
+
+    // Sort
+    filtered.sort((a, b) => {
+      let valA = a[sortField];
+      let valB = b[sortField];
+
+      if (valA < valB) return sortDirection === "asc" ? -1 : 1;
+      if (valA > valB) return sortDirection === "asc" ? 1 : -1;
+      return 0;
+    });
+
+    tableBody.innerHTML = "";
+    if (filtered.length === 0) {
+      tableBody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:32px; color:var(--text-muted)">No matching census tracts found.</td></tr>`;
+      visibleCount.textContent = "0";
+      return;
+    }
+
+    visibleCount.textContent = filtered.length;
+    const avgPrice = filtered.reduce((acc, cur) => acc + cur.medv, 0) / filtered.length;
+    const avgRooms = filtered.reduce((acc, cur) => acc + cur.rm, 0) / filtered.length;
+    const avgCrim = filtered.reduce((acc, cur) => acc + cur.crim, 0) / filtered.length;
+
+    avgPriceDisplay.textContent = `$${Math.round(avgPrice * 1000).toLocaleString()} ($${avgPrice.toFixed(1)}k)`;
+    avgRoomsDisplay.textContent = `${avgRooms.toFixed(2)} rms`;
+    avgCrimDisplay.textContent = `${avgCrim.toFixed(2)}`;
+
+    // Render limited rows if too many to ensure smooth 60fps scrolling (render up to 100 per page or virtual)
+    const displayList = filtered.slice(0, 150);
+
+    displayList.forEach(row => {
+      const tr = document.createElement("tr");
+      const priceDollars = Math.round(row.medv * 1000);
+      const isWaterfront = row.chas === 1;
+
+      tr.innerHTML = `
+        <td><span class="row-id">#${row.id}</span></td>
+        <td class="font-mono text-cyan">${row.rm.toFixed(2)}</td>
+        <td class="font-mono text-amber">${row.lstat.toFixed(1)}%</td>
+        <td class="font-mono">${row.ptratio.toFixed(1)}</td>
+        <td class="font-mono">${row.crim.toFixed(3)}</td>
+        <td class="font-mono">$${Math.round(row.tax)}</td>
+        <td class="font-mono">${row.nox.toFixed(3)}</td>
+        <td>
+          <span class="status-pill ${isWaterfront ? 'status-optimal' : 'status-baseline'}">
+            ${isWaterfront ? '🌊 River' : 'Inland'}
+          </span>
+        </td>
+        <td class="font-mono text-green">
+          <strong>$${priceDollars.toLocaleString()}</strong>
+          <span style="font-size:0.75rem; color:var(--text-muted); display:block;">($${row.medv.toFixed(1)}k)</span>
+        </td>
+      `;
+      tableBody.appendChild(tr);
+    });
+
+    if (filtered.length > 150) {
+      const trNotice = document.createElement("tr");
+      trNotice.innerHTML = `<td colspan="9" style="text-align:center; padding:12px; font-size:0.85rem; color:var(--text-muted)">Showing first 150 of ${filtered.length} matching census tracts. Use search or filters to narrow down.</td>`;
+      tableBody.appendChild(trNotice);
+    }
+  }
+
+  filterPills.forEach(pill => {
+    pill.addEventListener("click", () => {
+      filterPills.forEach(p => p.classList.remove("active"));
+      pill.classList.add("active");
+      currentFilter = pill.getAttribute("data-filter");
+      renderTable();
+    });
+  });
+
+  searchInput.addEventListener("input", e => {
+    searchQuery = e.target.value;
+    renderTable();
+  });
+
+  headers.forEach(th => {
+    th.addEventListener("click", () => {
+      const field = th.getAttribute("data-sort");
+      if (!field) return;
+      if (sortField === field) {
+        sortDirection = sortDirection === "asc" ? "desc" : "asc";
+      } else {
+        sortField = field;
+        sortDirection = "desc";
+      }
+      renderTable();
+    });
+  });
+
   renderTable();
 }

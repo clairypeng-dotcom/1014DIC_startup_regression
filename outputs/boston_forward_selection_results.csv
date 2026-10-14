@@ -1,0 +1,14 @@
+Step (k),Added Feature,Selected Features,Train 5-Fold CV RMSE,Test RMSE,Test R-squared
+1,lstat,lstat,6.0468,6.8071,0.431
+2,ptratio,"lstat, ptratio",5.4163,7.1752,0.3677
+3,rm,"lstat, ptratio, rm",4.9392,6.4558,0.4882
+4,b,"lstat, ptratio, rm, b",4.8741,6.3836,0.4996
+5,chas,"lstat, ptratio, rm, b, chas",4.8263,6.2939,0.5135
+6,dis,"lstat, ptratio, rm, b, chas, dis",4.7971,6.0854,0.5452
+7,nox,"lstat, ptratio, rm, b, chas, dis, nox",4.6811,5.9729,0.5619
+8,crim,"lstat, ptratio, rm, b, chas, dis, nox, crim",4.6656,6.0156,0.5556
+9,zn,"lstat, ptratio, rm, b, chas, dis, nox, crim, zn",4.6561,5.9582,0.564
+10,indus,"lstat, ptratio, rm, b, chas, dis, nox, crim, zn, indus",4.656,5.9707,0.5622
+11,rad,"lstat, ptratio, rm, b, chas, dis, nox, crim, zn, indus, rad",4.6668,5.8583,0.5785
+12,tax,"lstat, ptratio, rm, b, chas, dis, nox, crim, zn, indus, rad, tax",4.6143,5.7802,0.5897
+13,age,"lstat, ptratio, rm, b, chas, dis, nox, crim, zn, indus, rad, tax, age",4.6493,5.7835,0.5892

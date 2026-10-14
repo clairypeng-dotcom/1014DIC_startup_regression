@@ -1,229 +1,178 @@
-# 50 Startups: Multiple Linear Regression & Forward Selection (CRISP-DM)
+# Machine Learning Regression Analytics Studio: 50 Startups & Boston Housing (CRISP-DM)
 
-A comprehensive Machine Learning project predicting startup profitability (`Profit`) using Multiple Linear Regression and Forward Selection under the **CRISP-DM** (Cross-Industry Standard Process for Data Mining) framework.
+A dual-domain empirical Machine Learning project implementing Multiple Linear Regression and Forward Selection under the **CRISP-DM** (Cross-Industry Standard Process for Data Mining) framework. Featuring interactive web dashboards, real-time prediction engines, 5-fold cross-validation analytics, and publication-quality diagnostic plots.
 
 ---
 
 ## Table of Contents
-- [Executive Summary](#executive-summary)
-- [Project Architecture & Directory Structure](#project-architecture--directory-structure)
-- [CRISP-DM Methodology](#crisp-dm-methodology)
-  - [Phase 1: Business Understanding](#phase-1-business-understanding)
-  - [Phase 2: Data Understanding](#phase-2-data-understanding)
-  - [Phase 3: Data Preparation](#phase-3-data-preparation)
-  - [Phase 4: Modeling](#phase-4-modeling)
-  - [Phase 5: Evaluation](#phase-5-evaluation)
-  - [Phase 6: Deployment](#phase-6-deployment)
-- [Forward Selection Deep-Dive](#forward-selection-deep-dive)
-- [Key Business Insights & Conclusions](#key-business-insights--conclusions)
-- [Environment Setup & How to Run](#environment-setup--how-to-run)
+- [Executive Overview](#executive-overview)
+- [Project Architecture & Deliverables](#project-architecture--deliverables)
+- [Dataset 1: 50 Startups Profitability](#dataset-1-50-startups-profitability)
+  - [CRISP-DM 6 Phases](#startups-crisp-dm-6-phases)
+  - [Forward Selection Results (k=1..5)](#startups-forward-selection-results)
+- [Dataset 2: Boston Housing Valuation](#dataset-2-boston-housing-valuation)
+  - [CRISP-DM 6 Phases](#boston-crisp-dm-6-phases)
+  - [Forward Selection Results (k=1..13)](#boston-forward-selection-results)
+- [Interactive Web Application Features](#interactive-web-application-features)
+- [Environment Setup & Reproduction Guide](#environment-setup--reproduction-guide)
 
 ---
 
-## Executive Summary
+## Executive Overview
 
-This study analyzes financial and operational expenditures across 50 startups to identify the primary drivers of profit and construct parsimonious linear regression models. 
+This study explores multiple linear regression across two distinct domains:
+1. **Corporate Financial Planning (50 Startups)**: Predicting commercial profitability from operational allocations (R&D, Marketing, Administration, Geography).
+2. **Urban Real Estate Economics (Boston Housing)**: Hedonic pricing estimation for 506 census tracts across structural attributes (`rm`, `age`), demographics (`lstat`, `ptratio`), and environmental factors (`nox`, `chas`, `dis`).
 
-### Key Findings
-1. **R&D Spend is the Dominant Factor**: R&D investment accounts for over 94.6% of startup profit variation ($R^2 = 0.9465$, coefficient $\approx 0.7735$).
-2. **Optimal Feature Subset ($k = 2$)**: Forward selection with 5-fold cross-validation on the training set identified that combining **`R&D Spend`** and **`Marketing Spend`** achieves the best out-of-sample performance (**Test $R^2 = 0.9474$**, **Test RMSE = $8,198.80**), outperforming the full 5-feature model (**Test $R^2 = 0.9347$**, **Test RMSE = $9,137.99**).
-3. **Diminishing Returns of Geographic Location & Administration**: State dummy variables and administrative expenses do not add predictive value and slightly increase model variance, highlighting the risk of overfitting.
+### Summary of Key Findings
+
+| Domain | Dataset | Sample Size | Features | Full Model Test R² | Optimal Model (CV Winner) | Optimal Test R² | Optimal Test RMSE |
+|---|---|---|---|---|---|---|---|
+| **Venture Capital** | 50 Startups | 50 | 5 | 0.9347 | **k = 2** (`R&D + Marketing`) | **0.9474** | **$8,198.80** |
+| **Real Estate** | Boston Housing | 506 | 13 | 0.5892 | **k = 12** (`All except Age`) | **0.5897** | **$5,780.20** |
+
+- **Occam's Razor Proven**: In both datasets, greedy forward selection guided strictly by **5-Fold Cross-Validation on the Training Set** discovered more parsimonious models that outperform the full feature baselines on held-out test data.
+- **Primary Value Drivers**:
+  - In 50 Startups: `R&D Spend` drives over 94.6% of profit variation ($\beta \approx +0.7735$).
+  - In Boston Housing: `Average Rooms (RM)` adds **+$3,709** per room, while `Lower Status Population (LSTAT)` reduces median value by **-$493** per 1% increase, and Charles River waterfront parcels command a **+$2,341** premium.
 
 ---
 
-## Project Architecture & Directory Structure
+## Project Architecture & Deliverables
 
 ```text
 startup_regression/
-├── .venv/                               # Python isolated virtual environment
-├── outputs/                             # Output artifacts generated by script
-│   ├── actual_vs_predicted_profit.png   # Scatter plot of actual vs predicted profit
-│   └── forward_selection_results.csv    # Empirical results across k=1..5 features
-├── requirements.txt                     # Pinned project dependencies
-├── startup_regression.py                # Complete end-to-end CRISP-DM pipeline
-└── README.md                            # Comprehensive CRISP-DM technical report
+├── boston_data.js                     # Embedded Boston Housing data for offline execution
+├── boston_regression.py               # Complete CRISP-DM pipeline for Boston Housing
+├── startup_regression.py              # Complete CRISP-DM pipeline for 50 Startups
+├── index.html                         # Interactive dual-dataset web dashboard
+├── style.css                          # Dark glassmorphism design system
+├── app.js                             # Multi-dataset controller, charts & live simulators
+├── requirements.txt                   # Python dependencies
+├── README.md                          # Comprehensive project technical report
+└── outputs/                           # Generated empirical artifacts
+    ├── actual_vs_predicted_profit.png # Startups 300-DPI scatter plot
+    ├── boston_actual_vs_predicted.png # Boston Housing 300-DPI scatter plot
+    ├── boston_forward_selection_results.csv # Boston 13-step selection table
+    ├── boston_housing.csv             # Local copy of raw Boston Housing dataset
+    ├── boston_housing_data.json       # JSON formatted records
+    ├── forward_selection_results.csv  # Startups 5-step selection table
+    └── startups_data.json             # Startups JSON records
 ```
 
-### File Manifest
-- **`startup_regression.py`**: Automated end-to-end pipeline implementing all six CRISP-DM stages: data download, exploratory data analysis, one-hot encoding, train/test split, multiple linear regression, performance evaluation, forward selection via 5-fold CV, and artifact generation.
-- **`requirements.txt`**: Specifies all required Python packages (`pandas`, `numpy`, `requests`, `scikit-learn`, `matplotlib`, `tabulate`).
-- **`outputs/actual_vs_predicted_profit.png`**: High-resolution scatter plot visualizing actual vs. predicted startup profits with an ideal reference line ($y = x$) and key metrics annotations.
-- **`outputs/forward_selection_results.csv`**: Tabulated experimental results containing Training 5-Fold CV RMSE, Test RMSE, and Test $R^2$ for subsets of 1 to 5 features.
+---
+
+## Dataset 1: 50 Startups Profitability
+
+### Startups CRISP-DM 6 Phases
+
+1. **Business Understanding**: Underwrite venture capital investments, maximize capital efficiency, and model the financial return of R&D vs administrative overhead.
+2. **Data Understanding**: 50 records from US startups across California, New York, and Florida. Zero missing values. Mean profit = $112,012.64.
+3. **Data Preparation**: One-Hot Encoding on `State` with `drop_first=True` to eliminate the dummy variable trap. 80/20 train/test split (40 train / 10 test, `random_state=0`).
+4. **Modeling**: Ordinary Least Squares (OLS) Multiple Linear Regression.
+   $$\text{Predicted Profit} = 42,554.17 + 0.7735(\text{R&D}) + 0.0329(\text{Admin}) + 0.0366(\text{Mkt}) - 959.28(\text{FL}) + 699.37(\text{NY})$$
+5. **Evaluation**: Test $R^2 = 0.9347$, Test RMSE = $9,137.99$, MAE = $7,514.29$. High linear fidelity along $y = x$.
+6. **Deployment**: Saved publication-grade plot (`actual_vs_predicted_profit.png`) and tabular CSV metrics.
+
+### Startups Forward Selection Results
+
+| Step (k) | Added Feature | Selected Features | Train 5-Fold CV RMSE | Test RMSE | Test R² | Status |
+|:---:|---|---|:---:|:---:|:---:|:---:|
+| 1 | R&D Spend | `R&D Spend` | $9,745.40 | $8,274.87 | 0.9465 | Baseline |
+| **2** | **Marketing Spend** | `R&D Spend, Marketing Spend` | **$9,482.34** | **$8,198.80** | **0.9474** | **★ Optimal Model** |
+| 3 | Administration | `R&D, Marketing, Admin` | $9,678.08 | $8,803.78 | 0.9394 | Overfitting Begins |
+| 4 | State_Florida | `R&D, Marketing, Admin, State_FL` | $9,885.56 | $9,068.54 | 0.9357 | Increased Variance |
+| 5 | State_New York | `All 5 Features` | $10,158.66 | $9,137.99 | 0.9347 | Full Model |
 
 ---
 
-## CRISP-DM Methodology
+## Dataset 2: Boston Housing Valuation
 
-### Phase 1: Business Understanding
+### Boston CRISP-DM 6 Phases
 
-#### 1. Background & Objective
-Startups operate in high-risk, capital-constrained environments where capital allocation determines business survival. The objective of this project is to model and predict the target variable `Profit` using operational expenditures (`R&D Spend`, `Administration`, `Marketing Spend`) and geographical headquarters location (`State`).
+1. **Business Understanding**: Estimate tract-level property values (`MEDV` in $1,000s) using Hedonic pricing. Benchmark structural features (`rm`), environmental externalities (`nox`), school quality (`ptratio`), and accessibility (`dis`, `rad`).
+2. **Data Understanding**: 506 census tracts across 13 predictor columns + target (`medv`). Zero missing entries.
+   - Mean price: $22,533 ($22.53k). Range: $5,000 to $50,000.
+   - 35 tracts border the Charles River (`chas = 1`), 471 inland (`chas = 0`).
+3. **Data Preparation**: 80/20 train/test split (404 train / 102 test, `random_state=0`). Zero test leakage during cross-validation.
+4. **Modeling**: Full 13-feature OLS Multiple Linear Regression:
+   $$\begin{aligned}
+   \text{Predicted MEDV} = & \, 38.0917 - 0.1194(\text{CRIM}) + 0.0448(\text{ZN}) + 0.0055(\text{INDUS}) + 2.3408(\text{CHAS}) \\
+   & - 16.1236(\text{NOX}) + 3.7087(\text{RM}) - 0.0031(\text{AGE}) - 1.3864(\text{DIS}) + 0.2442(\text{RAD}) \\
+   & - 0.0110(\text{TAX}) - 1.0459(\text{PTRATIO}) + 0.0081(\text{B}) - 0.4928(\text{LSTAT})
+   \end{aligned}$$
+5. **Evaluation**: Full model test metrics on 102 held-out tracts: Test $R^2 = 0.5892$, Test RMSE = $5,783.51$, Test MAE = $3,842.91$.
+6. **Deployment**: Saved local CSV (`boston_housing.csv`), JSON (`boston_housing_data.json`), forward selection CSV (`boston_forward_selection_results.csv`), and scatter plot (`boston_actual_vs_predicted.png`).
 
-#### 2. Stakeholder Value
-- **Venture Capitalists & Angel Investors**: Assess startup valuations, estimate projected profitability, and benchmark spending efficiency before making investment decisions.
-- **Startup Founders & C-Suite Executives**: Guide budget planning and resource allocation to optimize return on investment (ROI) while minimizing cash burn rate.
-- **Incubators & Accelerators**: Provide evidence-based spending guidelines for early-stage portfolio companies.
+### Boston Forward Selection Results
 
----
-
-### Phase 2: Data Understanding
-
-The dataset was downloaded programmatically via HTTP `GET` using Python's `requests` library from:
-`https://raw.githubusercontent.com/harimittapalli/Mulitple-Linear-Reggression/master/50_Startups.csv`
-
-#### 1. Dataset Shape & Integrity
-- **Total Records**: 50 rows
-- **Total Columns**: 5 columns
-- **Missing Values**: 0 across all features and target variable
-
-#### 2. Feature Schema & Summary Statistics
-| Feature | Data Type | Mean | Std Dev | Min | Median (50%) | Max | Description |
-|---|---|---|---|---|---|---|---|
-| **R&D Spend** | Continuous (`float64`) | $73,721.62 | $45,902.26 | $0.00 | $73,051.08 | $165,349.20 | Research & Development expenditure |
-| **Administration** | Continuous (`float64`) | $121,344.64 | $28,017.77 | $51,283.14 | $122,699.80 | $182,645.56 | Management & operational expenses |
-| **Marketing Spend** | Continuous (`float64`) | $211,025.10 | $122,290.31 | $0.00 | $212,716.24 | $471,784.10 | Marketing, advertising & promotion |
-| **State** | Categorical (`str`) | 3 unique values: `New York`, `California`, `Florida` | Headquarters jurisdiction |
-| **Profit** *(Target)* | Continuous (`float64`) | $112,012.64 | $40,306.18 | $14,681.40 | $107,978.19 | $192,261.83 | Operating profit generated |
-
----
-
-### Phase 3: Data Preparation
-
-#### 1. Categorical Variable Encoding (Avoiding the Dummy Variable Trap)
-The categorical column `State` contains three distinct classes: `California`, `Florida`, and `New York`. 
-To avoid **multicollinearity** (the *Dummy Variable Trap*), we apply One-Hot Encoding with `drop_first=True` using `pandas.get_dummies()`:
-- `California` acts as the reference (baseline) category when both dummy variables equal `0`.
-- `State_Florida` = 1 if the startup is based in Florida, 0 otherwise.
-- `State_New York` = 1 if the startup is based in New York, 0 otherwise.
-
-This reduces the state dimensions to 2 independent features, preventing a singular design matrix $(X^TX)^{-1}$.
-
-#### 2. Train-Test Split
-To guarantee sound statistical evaluation and avoid data leakage:
-- **Test Size**: 20% (10 samples)
-- **Train Size**: 80% (40 samples)
-- **Random State**: 0 (`random_state=0`) for complete reproducibility
+| Step (k) | Added Feature | Train 5-Fold CV RMSE | Test RMSE | Test R² | Analytical Interpretation |
+|:---:|---|:---:|:---:|:---:|---|
+| 1 | `lstat` | 6.0468 ($6,047) | 6.8071 | 0.4310 | Primary demographic driver |
+| 2 | `ptratio` | 5.4163 ($5,416) | 7.1752 | 0.3677 | School district quality |
+| 3 | `rm` | 4.9392 ($4,939) | 6.4558 | 0.4882 | Core Hedonic structural factor |
+| 4 | `b` | 4.8741 ($4,874) | 6.3836 | 0.4996 | Demographic index |
+| 5 | `chas` | 4.8263 ($4,826) | 6.2939 | 0.5135 | Charles River waterfront premium |
+| 6 | `dis` | 4.7971 ($4,797) | 6.0854 | 0.5452 | Commute distance to employment |
+| 7 | `nox` | 4.6811 ($4,681) | 5.9729 | 0.5619 | Air pollution penalty |
+| 8 | `crim` | 4.6656 ($4,666) | 6.0156 | 0.5556 | Crime rate penalty |
+| 9 | `zn` | 4.6561 ($4,656) | 5.9582 | 0.5640 | Large lot residential zoning |
+| 10 | `indus` | 4.6560 ($4,656) | 5.9707 | 0.5622 | Industrial/commercial ratio |
+| 11 | `rad` | 4.6668 ($4,667) | 5.8583 | 0.5785 | Radial highway accessibility |
+| **12** | **`tax`** | **4.6143 ($4,614)** | **5.7802** | **0.5897** | **★ Optimal Model (Min CV RMSE)** |
+| 13 | `age` | 4.6493 ($4,649) | 5.7835 | 0.5892 | Redundant feature; degrades CV score |
 
 ---
 
-### Phase 4: Modeling
+## Interactive Web Application Features
 
-We train a Multiple Linear Regression model using `sklearn.linear_model.LinearRegression` on all 5 features:
-
-$$\hat{y} = \beta_0 + \beta_1 X_{\text{R\&D}} + \beta_2 X_{\text{Admin}} + \beta_3 X_{\text{Marketing}} + \beta_4 D_{\text{Florida}} + \beta_5 D_{\text{New York}}$$
-
-#### Empirical Regression Results (Full Feature Model)
-- **Intercept ($\beta_0$)**: `$42,554.17`
-
-| Feature | Coefficient ($\beta_j$) | Interpretation |
-|---|---|---|
-| **R&D Spend** | **+0.7735** | Each additional $1 spent on R&D is associated with an expected profit increase of ~$0.77. |
-| **Administration** | **+0.0329** | Administration spending shows minimal direct leverage on profitability (~$0.03 per $1 spent). |
-| **Marketing Spend** | **+0.0366** | Marketing spending has a minor positive correlation (~$0.037 per $1 spent). |
-| **State_Florida** | **-959.28** | Being based in Florida relative to California is associated with a ~$959 lower profit, ceteris paribus. |
-| **State_New York** | **+699.37** | Being based in New York relative to California is associated with a ~$699 higher profit, ceteris paribus. |
-
----
-
-### Phase 5: Evaluation
-
-#### 1. Evaluation Metrics on Unseen Test Set (10 Samples)
-- **R-squared ($R^2$)**: **`0.9347`** (93.47% of profit variance in test data explained)
-- **Mean Absolute Error (MAE)**: **`$7,514.29`**
-- **Mean Squared Error (MSE)**: **`83,502,864.03`**
-- **Root Mean Squared Error (RMSE)**: **`$9,137.99`**
-
-#### 2. Actual vs. Predicted Profit Visualization
-The generated plot (`outputs/actual_vs_predicted_profit.png`) demonstrates high predictive alignment along the ideal $y = x$ reference line:
-
-![Actual vs. Predicted Profit](outputs/actual_vs_predicted_profit.png)
+The single unified web application (`index.html`) seamlessly switches between both datasets without reloading:
+1. **Interactive Problem Dropdown Window**: Prominent dropdown windows located in both the sticky navigation bar and the Hero section allow users to expand a menu showing:
+   - **Problem 1: 50 Startups Profitability** ($N=50$, $k=2$ Optimal, Test $R^2 = 0.9474$, Test RMSE = $8,198.80$)
+   - **Problem 2: Boston Housing Valuation** ($N=506$, $k=12$ Optimal, Test $R^2 = 0.5897$, Test RMSE = $5,780.20$)
+   Selecting either problem immediately updates the entire page's context with zero page reload.
+2. **Dynamic Executive KPIs**: Automatically updates KPI cards, trends, and Occam's razor summaries.
+3. **CRISP-DM 6-Phase Explorer**: Interactive tab navigation for Business Understanding, EDA tables, formulas, and 300-DPI scatter plots.
+4. **HTML5 Canvas Error Curves**: High-DPI interactive chart displaying Train 5-Fold CV RMSE, Test RMSE, and Test R² curves with highlighted optimal steps.
+5. **Live Prediction Simulators**:
+   - **Startup Profit Simulator**: Adjust R&D, Marketing, Admin budgets and State headquarters with live waterfall profit attribution.
+   - **Boston Home Valuation Estimator**: Interactive sliders for RM, LSTAT, PTRATIO, CRIM, TAX, NOX, and Charles River waterfront checkbox. Includes quick presets (*Beacon Hill Luxury*, *Suburban Family*, *Urban Flat*, *Industrial District*) and 95% valuation confidence intervals.
+6. **Interactive Dataset Explorers**:
+   - Filter pills (State filters for startups; River waterfront & price tier filters for Boston).
+   - Real-time text search and click-to-sort on every column.
+   - Summary statistics display bar.
 
 ---
 
-### Phase 6: Deployment
+## Environment Setup & Reproduction Guide
 
-- **Automated Script Execution**: The entire pipeline runs via a single command:
-  ```bash
-  ./.venv/bin/python startup_regression.py
-  ```
-- **Self-contained Artifact Generation**: Outputs are systematically exported to `outputs/`:
-  - `outputs/actual_vs_predicted_profit.png`: Visualization ready for investor presentations.
-  - `outputs/forward_selection_results.csv`: Audit-ready metrics exportable to BI dashboards.
+### 1. Prerequisites
+- Python 3.9+ installed
+- Modern web browser (Chrome, Edge, Safari, Firefox)
 
----
+### 2. Setup Virtual Environment
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
 
-## Forward Selection Deep-Dive
+### 3. Run Both Regression Pipelines
+```bash
+# Run 50 Startups Pipeline
+python startup_regression.py
 
-### Algorithm Design
-To avoid overfitting and select the most parsimonious model, forward stepwise selection was implemented under strict validation constraints:
-1. **Selection Criterion**: 5-Fold Cross-Validation RMSE on the **Training Set Only** (`KFold(n_splits=5, shuffle=True, random_state=0)`).
-2. **Information Leakage Prevention**: The **Test Set is NEVER accessed** during feature selection.
-3. **Stepwise Iteration**: At each step $k \in \{1, 2, 3, 4, 5\}$, the candidate feature producing the minimum training CV RMSE is added.
-4. **Out-of-Sample Evaluation**: Once $k$ features are selected, the model is retrained on the full 40-sample training set, and tested on the 10-sample test set to compute Test RMSE and Test $R^2$.
+# Run Boston Housing Pipeline
+python boston_regression.py
+```
 
-### Empirical Forward Selection Results
-Below are the actual numbers obtained from execution:
+### 4. Launch the Interactive Dashboard
+You can open `index.html` directly in your browser:
+```bash
+# macOS
+open index.html
 
-| Step ($k$) | Added Feature | Selected Features | Train 5-Fold CV RMSE ($) | Test RMSE ($) | Test $R^2$ |
-|:---:|---|---|:---:|:---:|:---:|
-| **1** | **R&D Spend** | `R&D Spend` | 9,745.40 | 8,274.87 | 0.9465 |
-| **2** | **Marketing Spend** | `R&D Spend, Marketing Spend` | **9,482.34** | **8,198.80** | **0.9474** |
-| **3** | Administration | `R&D Spend, Marketing Spend, Administration` | 9,678.08 | 8,803.78 | 0.9394 |
-| **4** | State_Florida | `R&D Spend, Marketing Spend, Administration, State_Florida` | 9,885.56 | 9,068.54 | 0.9357 |
-| **5** | State_New York | `R&D Spend, Marketing Spend, Administration, State_Florida, State_New York` | 10,158.66 | 9,137.99 | 0.9347 |
-
-### Analysis of Results
-1. **Optimal Model is $k = 2$**:
-   - Both the Training 5-Fold CV RMSE ($9,482.34) and the Test RMSE ($8,198.80) reach their lowest values at **$k = 2$** (`R&D Spend` + `Marketing Spend`).
-   - The test set $R^2$ reaches its maximum of **`0.9474`**.
-2. **Occam's Razor & Overfitting**:
-   - Adding `Administration`, `State_Florida`, and `State_New York` (Steps 3, 4, 5) steadily *increases* both the cross-validation error (from $9,482.34 up to $10,158.66) and test error (from $8,198.80 up to $9,137.99).
-   - This proves that extraneous features introduce variance without contributing explanatory power.
-
----
-
-## Key Business Insights & Conclusions
-
-1. **Prioritize R&D Above All**:
-   - R&D expenditure is the single most predictive indicator of startup profitability. Startups focusing heavily on core technology and product innovation exhibit higher operating margins.
-2. **Complement with Targeted Marketing**:
-   - Combining R&D with Marketing produces the optimal predictive model ($R^2 = 0.9474$), indicating that strong product development paired with go-to-market execution drives peak financial return.
-3. **Minimize Administrative Bloat**:
-   - High administrative spending does not correlate with increased profit; lean organizational structures preserve capital for revenue-generating activities.
-4. **Geography is Secondary**:
-   - Modern startups operate across state borders. Location differences between California, New York, and Florida account for negligible profit differences compared to core product-market fit.
-
-### Threats to Validity & Limitations
-1. **Sample Size Constraint**: The dataset contains 50 records ($N = 50$), with 10 records in the test set. While standard for academic demonstration, larger multi-year datasets across diverse industries and market cycles are recommended before making real-world capital decisions.
-2. **Correlation vs. Causality**: Regression coefficients demonstrate empirical association rather than direct causation. Increasing R&D budget without strategic alignment or market demand does not automatically guarantee profit.
-3. **Omitted Variables**: Key startup success factors such as founder experience, team size, competitive landscape, and macroeconomic factors are unobserved in this dataset.
-
----
-
-## Environment Setup & How to Run
-
-### Prerequisites
-- Python 3.10+ (tested on Python 3.11.4)
-- Internet connection (to download dataset on execution)
-
-### Quick Start
-
-1. **Clone or Navigate to the Workspace**:
-   ```bash
-   cd /Users/pengjie/Documents/startup_regression
-   ```
-
-2. **Activate Virtual Environment**:
-   ```bash
-   source .venv/bin/activate
-   ```
-   *(If creating from scratch: `python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt`)*
-
-3. **Run the Script**:
-   ```bash
-   python startup_regression.py
-   ```
-
-4. **Verify Generated Artifacts**:
-   - Scatter plot: `outputs/actual_vs_predicted_profit.png`
-   - Forward selection CSV: `outputs/forward_selection_results.csv`
+# Or launch a local development server
+python -m http.server 8000
+# Then visit: http://localhost:8000
+```

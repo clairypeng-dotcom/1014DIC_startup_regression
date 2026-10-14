@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>50 Startups Machine Learning Analytics | CRISP-DM Regression & Forward Selection</title>
-  <meta name="description" content="Interactive Machine Learning dashboard for 50 Startups Multiple Linear Regression and Forward Selection using the CRISP-DM methodology. Predict startup profits, explore cross-validation results, and test feature subsets.">
+  <title>Machine Learning Regression Analytics Studio | 50 Startups & Boston Housing (CRISP-DM)</title>
+  <meta name="description" content="Interactive Machine Learning dashboard for 50 Startups and Boston Housing Multiple Linear Regression & Forward Selection using CRISP-DM methodology. Live simulators, cross-validation analytics, and dataset explorers.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -27,15 +27,60 @@
             <line x1="6" y1="20" x2="6" y2="14"></line>
           </svg>
         </span>
-        <span class="brand-text">Startup<span class="brand-accent">Regression</span></span>
+        <span class="brand-text">Regression<span class="brand-accent">Studio</span></span>
         <span class="badge badge-accent">CRISP-DM</span>
       </a>
+
+      <!-- Problem Selector Dropdown Window in Navbar -->
+      <div class="problem-dropdown" id="navProblemDropdown">
+        <button class="dropdown-trigger" id="dropdownTriggerNav" aria-haspopup="listbox" aria-expanded="false" title="Click to choose regression problem">
+          <span class="trigger-icon" id="navProblemIcon">🚀</span>
+          <span class="trigger-title" id="navProblemTitle">Problem 1: 50 Startups</span>
+          <span class="trigger-badge" id="navProblemBadge">k=2 Optimal</span>
+          <svg class="dropdown-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+
+        <!-- Dropdown Window Menu -->
+        <div class="dropdown-window" id="dropdownWindowNav" role="listbox" aria-label="Select Regression Problem">
+          <div class="dropdown-window-header">Choose Regression Problem</div>
+          
+          <div class="dropdown-option active" data-dataset="startups" role="option" tabindex="0">
+            <div class="opt-head">
+              <div class="opt-title-group">
+                <span class="opt-icon">🚀</span>
+                <span class="opt-name">Problem 1: 50 Startups Profitability</span>
+              </div>
+              <span class="badge badge-accent">k=2 Optimal</span>
+            </div>
+            <p class="opt-desc">Multiple Linear Regression on R&D, Administration, and Marketing expenditures to optimize corporate profitability ($N=50$).</p>
+            <div class="opt-meta">
+              <span>Optimal Test R² = 0.9474</span>
+              <span>Test RMSE = $8,198.80</span>
+            </div>
+          </div>
+
+          <div class="dropdown-option" data-dataset="boston" role="option" tabindex="0">
+            <div class="opt-head">
+              <div class="opt-title-group">
+                <span class="opt-icon">🏡</span>
+                <span class="opt-name">Problem 2: Boston Housing Valuation</span>
+              </div>
+              <span class="badge badge-accent">k=12 Optimal</span>
+            </div>
+            <p class="opt-desc">Hedonic real estate pricing across 506 census tracts analyzing room counts, school quality, pollution, and waterfront proximity ($N=506$).</p>
+            <div class="opt-meta">
+              <span>Optimal Test R² = 0.5897</span>
+              <span>Test RMSE = $5,780.20</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <nav class="nav-links" id="desktopNav">
         <a href="#kpi-summary" class="nav-link" id="navKpi">Executive KPIs</a>
         <a href="#crisp-dm-section" class="nav-link" id="navCrispDm">CRISP-DM Phases</a>
         <a href="#forward-selection-section" class="nav-link" id="navFs">Forward Selection</a>
-        <a href="#simulator-section" class="nav-link" id="navSimulator">Profit Simulator</a>
+        <a href="#simulator-section" class="nav-link" id="navSimulator">Live Simulator</a>
         <a href="#dataset-section" class="nav-link" id="navDataset">Data Explorer</a>
       </nav>
 
@@ -51,13 +96,49 @@
   <main class="page-main">
     <!-- Hero Section -->
     <section class="hero-section" id="hero">
-      <div class="hero-content">
+      <!-- Problem Dropdown Bar in Hero -->
+      <div class="hero-problem-bar">
+        <span class="problem-label">Active Problem:</span>
+        <div class="problem-dropdown" id="heroProblemDropdown">
+          <button class="dropdown-trigger" id="dropdownTriggerHero" aria-haspopup="listbox" aria-expanded="false">
+            <span class="trigger-icon" id="heroProblemIcon">🚀</span>
+            <span class="trigger-title" id="heroProblemTitle">Problem 1: 50 Startups Profitability</span>
+            <span class="trigger-badge" id="heroProblemBadge">k=2 Optimal</span>
+            <svg class="dropdown-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div class="dropdown-window" id="dropdownWindowHero" role="listbox">
+            <div class="dropdown-window-header">Choose Regression Problem</div>
+            <div class="dropdown-option active" data-dataset="startups" role="option" tabindex="0">
+              <div class="opt-head">
+                <div class="opt-title-group">
+                  <span class="opt-icon">🚀</span>
+                  <span class="opt-name">Problem 1: 50 Startups Profitability</span>
+                </div>
+                <span class="badge badge-accent">k=2</span>
+              </div>
+              <p class="opt-desc">Operational budget allocation and profitability modeling ($N=50$).</p>
+            </div>
+            <div class="dropdown-option" data-dataset="boston" role="option" tabindex="0">
+              <div class="opt-head">
+                <div class="opt-title-group">
+                  <span class="opt-icon">🏡</span>
+                  <span class="opt-name">Problem 2: Boston Housing Valuation</span>
+                </div>
+                <span class="badge badge-accent">k=12</span>
+              </div>
+              <p class="opt-desc">Hedonic real estate valuation across 506 Boston census tracts ($N=506$).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 50 Startups Hero Content -->
+      <div class="hero-content dataset-content" data-dataset="startups">
         <div class="hero-badges">
           <span class="pill pill-cyan">50 Startups Dataset</span>
           <span class="pill pill-purple">5-Fold Cross Validation</span>
           <span class="pill pill-green">Optimal Test R² = 0.9474</span>
         </div>
-        <h1 class="hero-title" id="pageMainHeading">
+        <h1 class="hero-title">
           Multiple Linear Regression & Forward Selection
           <span class="gradient-text">Profitability Analytics</span>
         </h1>
@@ -66,15 +147,47 @@
         </p>
 
         <div class="hero-cta-group">
-          <a href="#simulator-section" class="btn btn-primary" id="heroCtaSim">
+          <a href="#simulator-section" class="btn btn-primary">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
             Simulate Startup Profit
           </a>
-          <a href="#forward-selection-section" class="btn btn-secondary" id="heroCtaFs">
+          <a href="#forward-selection-section" class="btn btn-secondary">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
             View Feature Selection (k=1..5)
           </a>
-          <a href="outputs/actual_vs_predicted_profit.png" target="_blank" class="btn btn-outline" id="heroCtaPlot">
+          <a href="outputs/actual_vs_predicted_profit.png" target="_blank" class="btn btn-outline">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            Inspect Scatter Plot
+          </a>
+        </div>
+      </div>
+
+      <!-- Boston Housing Hero Content -->
+      <div class="hero-content dataset-content hidden-dataset" data-dataset="boston">
+        <div class="hero-badges">
+          <span class="pill pill-cyan">506 Boston Census Tracts</span>
+          <span class="pill pill-purple">13 Urban & Demographic Features</span>
+          <span class="pill pill-green">Optimal Test R² = 0.5897</span>
+          <span class="pill pill-amber">Min CV RMSE = $4,614</span>
+        </div>
+        <h1 class="hero-title">
+          Multiple Linear Regression & Forward Selection
+          <span class="gradient-text">Boston Housing Valuation</span>
+        </h1>
+        <p class="hero-subtitle">
+          An empirical Machine Learning investigation based on the <strong>CRISP-DM</strong> methodology. Evaluating how neighborhood socio-economic status (<strong>LSTAT</strong>), dwelling size (<strong>RM</strong>), school quality (<strong>PTRATIO</strong>), and pollution (<strong>NOX</strong>) determine residential property valuations across 506 census tracts.
+        </p>
+
+        <div class="hero-cta-group">
+          <a href="#simulator-section" class="btn btn-primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            Simulate Home Valuation
+          </a>
+          <a href="#forward-selection-section" class="btn btn-secondary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            View Feature Selection (k=1..13)
+          </a>
+          <a href="outputs/boston_actual_vs_predicted.png" target="_blank" class="btn btn-outline">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
             Inspect Scatter Plot
           </a>
@@ -82,438 +195,570 @@
       </div>
     </section>
 
-    <!-- Executive KPI Metric Cards -->
+    <!-- Executive KPI Metric Cards Section -->
     <section class="kpi-section" id="kpi-summary">
       <div class="section-container">
-        <div class="kpi-grid">
-          <!-- Card 1 -->
-          <div class="kpi-card highlight-card" id="kpiCardBestR2">
-            <div class="kpi-icon icon-green">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        <!-- 50 Startups KPIs -->
+        <div class="dataset-content" data-dataset="startups">
+          <div class="kpi-grid">
+            <div class="kpi-card highlight-card">
+              <div class="kpi-icon icon-green">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+              </div>
+              <div class="kpi-label">Optimal Model Test R² (k=2)</div>
+              <div class="kpi-value text-green">0.9474</div>
+              <div class="kpi-detail">
+                <span class="trend-badge positive">▲ +1.27%</span> vs Full 5-Feature model (0.9347)
+              </div>
             </div>
-            <div class="kpi-label">Optimal Model Test R² (k=2)</div>
-            <div class="kpi-value text-green">0.9474</div>
-            <div class="kpi-detail">
-              <span class="trend-badge positive">▲ +1.27%</span> vs Full 5-Feature model (0.9347)
+
+            <div class="kpi-card">
+              <div class="kpi-icon icon-cyan">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+              </div>
+              <div class="kpi-label">Optimal Test RMSE (k=2)</div>
+              <div class="kpi-value">$8,198.80</div>
+              <div class="kpi-detail">
+                <span class="trend-badge positive">▼ -$939.19</span> Error reduction vs full model ($9,137.99)
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-icon icon-purple">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              </div>
+              <div class="kpi-label">Primary Driver (R&D Spend)</div>
+              <div class="kpi-value">+0.7735</div>
+              <div class="kpi-detail">
+                Accounts for <strong>94.65%</strong> standalone profit variation
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-icon icon-amber">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+              </div>
+              <div class="kpi-label">Occam's Razor Evidence</div>
+              <div class="kpi-value text-amber">Admin & State</div>
+              <div class="kpi-detail">
+                Adding Step 3..5 increases CV RMSE from <strong>$9,482</strong> to <strong>$10,158</strong>
+              </div>
             </div>
           </div>
+        </div>
 
-          <!-- Card 2 -->
-          <div class="kpi-card" id="kpiCardBestRmse">
-            <div class="kpi-icon icon-cyan">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+        <!-- Boston Housing KPIs -->
+        <div class="dataset-content hidden-dataset" data-dataset="boston">
+          <div class="kpi-grid">
+            <div class="kpi-card highlight-card">
+              <div class="kpi-icon icon-green">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+              </div>
+              <div class="kpi-label">Optimal Model Test R² (k=12)</div>
+              <div class="kpi-value text-green">0.5897</div>
+              <div class="kpi-detail">
+                <span class="trend-badge positive">▲ +0.05%</span> vs Full 13-Feature model (0.5892)
+              </div>
             </div>
-            <div class="kpi-label">Optimal Test RMSE (k=2)</div>
-            <div class="kpi-value">$8,198.80</div>
-            <div class="kpi-detail">
-              <span class="trend-badge positive">▼ -$939.19</span> Error reduction vs full model ($9,137.99)
-            </div>
-          </div>
 
-          <!-- Card 3 -->
-          <div class="kpi-card" id="kpiCardTopPredictor">
-            <div class="kpi-icon icon-purple">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            <div class="kpi-card">
+              <div class="kpi-icon icon-cyan">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+              </div>
+              <div class="kpi-label">Optimal Test RMSE (k=12)</div>
+              <div class="kpi-value">$5,780.20</div>
+              <div class="kpi-detail">
+                <span class="trend-badge positive">▼ -$3.30</span> Outperforms full 13-feature baseline ($5,783.51)
+              </div>
             </div>
-            <div class="kpi-label">Primary Driver (R&D Spend)</div>
-            <div class="kpi-value">+0.7735</div>
-            <div class="kpi-detail">
-              Accounts for <strong>94.65%</strong> standalone profit variation
-            </div>
-          </div>
 
-          <!-- Card 4 -->
-          <div class="kpi-card" id="kpiCardOverfitting">
-            <div class="kpi-icon icon-amber">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            <div class="kpi-card">
+              <div class="kpi-icon icon-purple">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+              </div>
+              <div class="kpi-label">Top Structural Driver (RM)</div>
+              <div class="kpi-value">+$3,709</div>
+              <div class="kpi-detail">
+                +3.7087k valuation gain per additional bedroom / room
+              </div>
             </div>
-            <div class="kpi-label">Occam's Razor Evidence</div>
-            <div class="kpi-value text-amber">Admin & State</div>
-            <div class="kpi-detail">
-              Adding Step 3..5 increases CV RMSE from <strong>$9,482</strong> to <strong>$10,158</strong>
+
+            <div class="kpi-card">
+              <div class="kpi-icon icon-amber">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+              </div>
+              <div class="kpi-label">Occam's Razor Evidence</div>
+              <div class="kpi-value text-amber">Building Age (AGE)</div>
+              <div class="kpi-detail">
+                Adding Step 13 (AGE) increases CV RMSE from <strong>$4,614</strong> to <strong>$4,649</strong>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- CRISP-DM Six Phases Interactive Explorer -->
+    <!-- CRISP-DM Six Phases Interactive Explorer Section -->
     <section class="section crisp-dm-section" id="crisp-dm-section">
       <div class="section-container">
         <div class="section-header">
           <span class="section-tag">Methodology</span>
           <h2 class="section-title">CRISP-DM 6-Phase Lifecycle Explorer</h2>
-          <p class="section-desc">Click through each phase of the Cross-Industry Standard Process for Data Mining to inspect methods, code designs, and statistical outputs.</p>
+          <p class="section-desc">Click through each phase of the Cross-Industry Standard Process for Data Mining to inspect empirical methods, design decisions, and statistical outputs.</p>
         </div>
 
-        <!-- Phase Tabs Navigation -->
-        <div class="phase-nav-tabs" role="tablist" id="phaseTabContainer">
-          <button class="phase-tab active" data-phase="1" id="tabPhase1">
-            <span class="tab-num">01</span>
-            <span class="tab-name">Business Understanding</span>
-          </button>
-          <button class="phase-tab" data-phase="2" id="tabPhase2">
-            <span class="tab-num">02</span>
-            <span class="tab-name">Data Understanding</span>
-          </button>
-          <button class="phase-tab" data-phase="3" id="tabPhase3">
-            <span class="tab-num">03</span>
-            <span class="tab-name">Data Preparation</span>
-          </button>
-          <button class="phase-tab" data-phase="4" id="tabPhase4">
-            <span class="tab-num">04</span>
-            <span class="tab-name">Modeling</span>
-          </button>
-          <button class="phase-tab" data-phase="5" id="tabPhase5">
-            <span class="tab-num">05</span>
-            <span class="tab-name">Evaluation</span>
-          </button>
-          <button class="phase-tab" data-phase="6" id="tabPhase6">
-            <span class="tab-num">06</span>
-            <span class="tab-name">Deployment</span>
-          </button>
-        </div>
-
-        <!-- Phase Panels Content Container -->
-        <div class="phase-panels-wrapper">
-          <!-- Phase 1 -->
-          <div class="phase-panel active" id="panelPhase1">
-            <div class="panel-grid">
-              <div class="panel-main">
-                <h3 class="panel-title">Phase 1: Business Understanding</h3>
-                <p class="panel-lead">
-                  Predicting startup profitability is crucial for optimizing investment allocations and reducing early-stage cash burn rates.
-                </p>
-                <div class="card-feature-list">
-                  <div class="feature-item">
-                    <div class="feature-bullet">1</div>
-                    <div>
-                      <strong>Venture Capital & Investor Underwriting</strong>
-                      <p>Helps investors quantitatively benchmark capital efficiency and predict financial upside based on founders' projected spending distributions.</p>
-                    </div>
-                  </div>
-                  <div class="feature-item">
-                    <div class="feature-bullet">2</div>
-                    <div>
-                      <strong>Executive Budget Strategy</strong>
-                      <p>Enables startup founders to identify high-leverage expenditure categories and cut administrative overhead.</p>
-                    </div>
-                  </div>
-                  <div class="feature-item">
-                    <div class="feature-bullet">3</div>
-                    <div>
-                      <strong>Parsimony & Model Interpretability</strong>
-                      <p>Avoids building overly complex black-box models when linear factors provide clear, actionable insights.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="panel-sidebar">
-                <div class="sidebar-box">
-                  <h4>Target Variable</h4>
-                  <div class="metric-pill">Profit ($)</div>
-                  <h4>Key Feature Space</h4>
-                  <ul class="tag-list">
-                    <li>R&D Spend ($)</li>
-                    <li>Administration ($)</li>
-                    <li>Marketing Spend ($)</li>
-                    <li>State (Categorical)</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
+        <!-- 50 Startups CRISP-DM Lifecycle -->
+        <div class="dataset-content" data-dataset="startups">
+          <div class="phase-nav-tabs" role="tablist" id="phaseTabContainer_startups">
+            <button class="phase-tab active" data-phase="1">
+              <span class="tab-num">01</span>
+              <span class="tab-name">Business Understanding</span>
+            </button>
+            <button class="phase-tab" data-phase="2">
+              <span class="tab-num">02</span>
+              <span class="tab-name">Data Understanding</span>
+            </button>
+            <button class="phase-tab" data-phase="3">
+              <span class="tab-num">03</span>
+              <span class="tab-name">Data Preparation</span>
+            </button>
+            <button class="phase-tab" data-phase="4">
+              <span class="tab-num">04</span>
+              <span class="tab-name">Modeling</span>
+            </button>
+            <button class="phase-tab" data-phase="5">
+              <span class="tab-num">05</span>
+              <span class="tab-name">Evaluation</span>
+            </button>
+            <button class="phase-tab" data-phase="6">
+              <span class="tab-num">06</span>
+              <span class="tab-name">Deployment</span>
+            </button>
           </div>
 
-          <!-- Phase 2 -->
-          <div class="phase-panel" id="panelPhase2">
-            <div class="panel-grid">
-              <div class="panel-main">
-                <h3 class="panel-title">Phase 2: Data Understanding</h3>
-                <p class="panel-lead">
-                  Dataset programmatically downloaded using Python <code>requests</code> from GitHub repository. 50 observation rows, 5 columns, zero missing values.
-                </p>
-                <div class="table-responsive">
-                  <table class="data-table" id="edaSummaryTable">
-                    <thead>
-                      <tr>
-                        <th>Feature</th>
-                        <th>Type</th>
-                        <th>Mean</th>
-                        <th>Std Dev</th>
-                        <th>Min</th>
-                        <th>Max</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td><strong>R&D Spend</strong></td>
-                        <td>float64</td>
-                        <td>$73,721.62</td>
-                        <td>$45,902.26</td>
-                        <td>$0.00</td>
-                        <td>$165,349.20</td>
-                      </tr>
-                      <tr>
-                        <td><strong>Administration</strong></td>
-                        <td>float64</td>
-                        <td>$121,344.64</td>
-                        <td>$28,017.78</td>
-                        <td>$51,283.14</td>
-                        <td>$182,645.56</td>
-                      </tr>
-                      <tr>
-                        <td><strong>Marketing Spend</strong></td>
-                        <td>float64</td>
-                        <td>$211,025.10</td>
-                        <td>$122,290.31</td>
-                        <td>$0.00</td>
-                        <td>$471,784.10</td>
-                      </tr>
-                      <tr>
-                        <td><strong>Profit (Target)</strong></td>
-                        <td>float64</td>
-                        <td>$112,012.64</td>
-                        <td>$40,306.18</td>
-                        <td>$14,681.40</td>
-                        <td>$192,261.83</td>
-                      </tr>
-                      <tr>
-                        <td><strong>State</strong></td>
-                        <td>object</td>
-                        <td colspan="4">3 categories: California (17), New York (17), Florida (16)</td>
-                      </tr>
-                    </tbody>
-                  </table>
+          <div class="phase-panels-wrapper">
+            <!-- Phase 1: Startups -->
+            <div class="phase-panel active" id="panelPhase1_startups">
+              <div class="panel-grid">
+                <div class="panel-main">
+                  <h3 class="panel-title">Phase 1: Business Understanding</h3>
+                  <p class="panel-lead">Predicting startup profitability is crucial for optimizing investment allocations and reducing early-stage cash burn rates.</p>
+                  <div class="card-feature-list">
+                    <div class="feature-item">
+                      <div class="feature-bullet">1</div>
+                      <div>
+                        <strong>Venture Capital & Investor Underwriting</strong>
+                        <p>Helps investors benchmark capital efficiency and predict financial upside based on projected spending distributions.</p>
+                      </div>
+                    </div>
+                    <div class="feature-item">
+                      <div class="feature-bullet">2</div>
+                      <div>
+                        <strong>Executive Budget Strategy</strong>
+                        <p>Enables startup founders to identify high-leverage expenditure categories and cut administrative overhead.</p>
+                      </div>
+                    </div>
+                    <div class="feature-item">
+                      <div class="feature-bullet">3</div>
+                      <div>
+                        <strong>Parsimony & Interpretability</strong>
+                        <p>Avoids building overly complex models when linear factors provide clear, actionable business insights.</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div class="panel-sidebar">
-                <div class="sidebar-box">
-                  <h4>Data Hygiene Checks</h4>
-                  <div class="checklist">
-                    <div class="check-item"><span class="check-icon">✓</span> Missing values: 0</div>
-                    <div class="check-item"><span class="check-icon">✓</span> Duplicated rows: 0</div>
-                    <div class="check-item"><span class="check-icon">✓</span> Outlier integrity: Verified</div>
-                    <div class="check-item"><span class="check-icon">✓</span> Source HTTP 200 OK</div>
+                <div class="panel-sidebar">
+                  <div class="sidebar-box">
+                    <h4>Target Variable</h4>
+                    <div class="metric-pill">Profit ($)</div>
+                    <h4>Key Feature Space</h4>
+                    <ul class="tag-list">
+                      <li>R&D Spend ($)</li>
+                      <li>Administration ($)</li>
+                      <li>Marketing Spend ($)</li>
+                      <li>State (Categorical)</li>
+                    </ul>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- Phase 3 -->
-          <div class="phase-panel" id="panelPhase3">
-            <div class="panel-grid">
-              <div class="panel-main">
-                <h3 class="panel-title">Phase 3: Data Preparation</h3>
-                <p class="panel-lead">
-                  Solving the <strong>Dummy Variable Trap</strong> (Multicollinearity) via One-Hot Encoding and strict train-test separation.
-                </p>
-                <div class="code-explain-box">
-                  <div class="box-header">
-                    <span>One-Hot Encoding with drop_first=True</span>
-                    <span class="code-badge">pandas.get_dummies</span>
+            <!-- Phase 2: Startups -->
+            <div class="phase-panel" id="panelPhase2_startups">
+              <div class="panel-grid">
+                <div class="panel-main">
+                  <h3 class="panel-title">Phase 2: Data Understanding</h3>
+                  <p class="panel-lead">Dataset downloaded using Python <code>requests</code>. 50 observation rows, 5 columns, zero missing values.</p>
+                  <div class="table-responsive">
+                    <table class="data-table">
+                      <thead>
+                        <tr><th>Feature</th><th>Type</th><th>Mean</th><th>Std Dev</th><th>Min</th><th>Max</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr><td><strong>R&D Spend</strong></td><td>float64</td><td>$73,721.62</td><td>$45,902.26</td><td>$0.00</td><td>$165,349.20</td></tr>
+                        <tr><td><strong>Administration</strong></td><td>float64</td><td>$121,344.64</td><td>$28,017.78</td><td>$51,283.14</td><td>$182,645.56</td></tr>
+                        <tr><td><strong>Marketing Spend</strong></td><td>float64</td><td>$211,025.10</td><td>$122,290.31</td><td>$0.00</td><td>$471,784.10</td></tr>
+                        <tr><td><strong>Profit (Target)</strong></td><td>float64</td><td>$112,012.64</td><td>$40,306.18</td><td>$14,681.40</td><td>$192,261.83</td></tr>
+                        <tr><td><strong>State</strong></td><td>object</td><td colspan="4">3 categories: California (17), New York (17), Florida (16)</td></tr>
+                      </tbody>
+                    </table>
                   </div>
-                  <pre><code>df_encoded = pd.get_dummies(df, columns=['State'], drop_first=True, dtype=int)
+                </div>
+                <div class="panel-sidebar">
+                  <div class="sidebar-box">
+                    <h4>Data Hygiene Checks</h4>
+                    <div class="checklist">
+                      <div class="check-item"><span class="check-icon">✓</span> Missing values: 0</div>
+                      <div class="check-item"><span class="check-icon">✓</span> Duplicated rows: 0</div>
+                      <div class="check-item"><span class="check-icon">✓</span> Outlier integrity: Verified</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Phase 3: Startups -->
+            <div class="phase-panel" id="panelPhase3_startups">
+              <div class="panel-grid">
+                <div class="panel-main">
+                  <h3 class="panel-title">Phase 3: Data Preparation</h3>
+                  <p class="panel-lead">Solving the <strong>Dummy Variable Trap</strong> via One-Hot Encoding and strict train-test separation.</p>
+                  <div class="code-explain-box">
+                    <pre><code>df_encoded = pd.get_dummies(df, columns=['State'], drop_first=True, dtype=int)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)</code></pre>
-                  <p class="box-note">
-                    <strong>Why drop_first=True?</strong> In linear models, if $k$ categories are encoded into $k$ binary dummies, the sum of dummy columns equals the constant column (1.0), causing perfect multicollinearity $(X^TX)^{-1}$ singularity. Dropping <code>California</code> sets it as the baseline reference category.
+                  </div>
+                  <div class="split-stats-grid">
+                    <div class="stat-badge"><span class="stat-num">40</span><span class="stat-lbl">Train Samples (80%)</span></div>
+                    <div class="stat-badge"><span class="stat-num">10</span><span class="stat-lbl">Test Samples (20%)</span></div>
+                    <div class="stat-badge"><span class="stat-num">5</span><span class="stat-lbl">Predictor Features</span></div>
+                  </div>
+                </div>
+                <div class="panel-sidebar">
+                  <div class="sidebar-box">
+                    <h4>Encoded Features</h4>
+                    <ul class="tag-list">
+                      <li>R&D Spend</li>
+                      <li>Administration</li>
+                      <li>Marketing Spend</li>
+                      <li>State_Florida</li>
+                      <li>State_New York</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Phase 4: Startups -->
+            <div class="phase-panel" id="panelPhase4_startups">
+              <div class="panel-grid">
+                <div class="panel-main">
+                  <h3 class="panel-title">Phase 4: Modeling (Full 5-Feature Linear Regression)</h3>
+                  <div class="formula-box">
+                    <code>Predicted Profit = 42,554.17 + 0.7735(R&D) + 0.0329(Admin) + 0.0366(Marketing) - 959.28(Florida) + 699.37(New York)</code>
+                  </div>
+                  <div class="table-responsive">
+                    <table class="data-table">
+                      <thead><tr><th>Feature</th><th>Coefficient (β)</th><th>Impact</th><th>Interpretation</th></tr></thead>
+                      <tbody>
+                        <tr><td><strong>R&D Spend</strong></td><td class="text-green font-mono">+0.7735</td><td>+$0.77 per $1</td><td>Dominant driver of startup bottom line.</td></tr>
+                        <tr><td><strong>Administration</strong></td><td class="text-cyan font-mono">+0.0329</td><td>+$0.03 per $1</td><td>Negligible direct influence on profit.</td></tr>
+                        <tr><td><strong>Marketing Spend</strong></td><td class="text-purple font-mono">+0.0366</td><td>+$0.04 per $1</td><td>Modest positive contribution.</td></tr>
+                        <tr><td><strong>State_Florida</strong></td><td class="text-amber font-mono">-959.28</td><td>-$959 penalty</td><td>Relative baseline penalty vs California.</td></tr>
+                        <tr><td><strong>State_New York</strong></td><td class="text-cyan font-mono">+699.37</td><td>+$699 premium</td><td>Slight premium vs California.</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="panel-sidebar">
+                  <div class="sidebar-box">
+                    <h4>Model Info</h4>
+                    <div class="key-value-list">
+                      <div class="kv-row"><span>Intercept:</span> <strong>$42,554.17</strong></div>
+                      <div class="kv-row"><span>Method:</span> <strong>OLS (sklearn)</strong></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Phase 5: Startups -->
+            <div class="phase-panel" id="panelPhase5_startups">
+              <div class="panel-grid">
+                <div class="panel-main">
+                  <h3 class="panel-title">Phase 5: Evaluation</h3>
+                  <div class="eval-metrics-grid">
+                    <div class="eval-box"><span class="eval-lbl">R-Squared (R²)</span><span class="eval-val">0.9347</span><span class="eval-sub">93.47% test variance explained</span></div>
+                    <div class="eval-box"><span class="eval-lbl">RMSE</span><span class="eval-val">$9,137.99</span><span class="eval-sub">Test Root Mean Squared Error</span></div>
+                    <div class="eval-box"><span class="eval-lbl">MAE</span><span class="eval-val">$7,514.29</span><span class="eval-sub">Mean Absolute Error</span></div>
+                    <div class="eval-box"><span class="eval-lbl">MSE</span><span class="eval-val">8.35 × 10⁷</span><span class="eval-sub">Mean Squared Error</span></div>
+                  </div>
+                  <div class="plot-showcase">
+                    <div class="plot-header">
+                      <h4>Actual vs. Predicted Profit Visualization (Test Set)</h4>
+                      <a href="outputs/actual_vs_predicted_profit.png" target="_blank" class="btn btn-sm btn-outline">Full Resolution</a>
+                    </div>
+                    <div class="plot-img-container">
+                      <img src="outputs/actual_vs_predicted_profit.png" alt="Startups Actual vs Predicted Scatter Plot" class="plot-img">
+                    </div>
+                  </div>
+                </div>
+                <div class="panel-sidebar">
+                  <div class="sidebar-box">
+                    <h4>Diagnostics</h4>
+                    <p>Points tightly adhere to the 45-degree diagonal reference line ($y = x$), proving high predictive fidelity across diverse startup scales.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Phase 6: Startups -->
+            <div class="phase-panel" id="panelPhase6_startups">
+              <div class="panel-grid">
+                <div class="panel-main">
+                  <h3 class="panel-title">Phase 6: Deployment & Artifacts</h3>
+                  <div class="pipeline-flow">
+                    <div class="flow-step"><div class="flow-num">1</div><div class="flow-info"><strong>startup_regression.py</strong><span>Automated pipeline</span></div></div>
+                    <div class="flow-arrow">➔</div>
+                    <div class="flow-step"><div class="flow-num">2</div><div class="flow-info"><strong>forward_selection_results.csv</strong><span>Audit table</span></div></div>
+                    <div class="flow-arrow">➔</div>
+                    <div class="flow-step"><div class="flow-num">3</div><div class="flow-info"><strong>actual_vs_predicted_profit.png</strong><span>300 DPI Plot</span></div></div>
+                  </div>
+                </div>
+                <div class="panel-sidebar">
+                  <div class="sidebar-box">
+                    <h4>Run Pipeline</h4>
+                    <pre class="cli-box"><code>python startup_regression.py</code></pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Boston Housing CRISP-DM Lifecycle -->
+        <div class="dataset-content hidden-dataset" data-dataset="boston">
+          <div class="phase-nav-tabs" role="tablist" id="phaseTabContainer_boston">
+            <button class="phase-tab active" data-phase="1">
+              <span class="tab-num">01</span>
+              <span class="tab-name">Business Understanding</span>
+            </button>
+            <button class="phase-tab" data-phase="2">
+              <span class="tab-num">02</span>
+              <span class="tab-name">Data Understanding</span>
+            </button>
+            <button class="phase-tab" data-phase="3">
+              <span class="tab-num">03</span>
+              <span class="tab-name">Data Preparation</span>
+            </button>
+            <button class="phase-tab" data-phase="4">
+              <span class="tab-num">04</span>
+              <span class="tab-name">Modeling</span>
+            </button>
+            <button class="phase-tab" data-phase="5">
+              <span class="tab-num">05</span>
+              <span class="tab-name">Evaluation</span>
+            </button>
+            <button class="phase-tab" data-phase="6">
+              <span class="tab-num">06</span>
+              <span class="tab-name">Deployment</span>
+            </button>
+          </div>
+
+          <div class="phase-panels-wrapper">
+            <!-- Phase 1: Boston -->
+            <div class="phase-panel active" id="panelPhase1_boston">
+              <div class="panel-grid">
+                <div class="panel-main">
+                  <h3 class="panel-title">Phase 1: Business Understanding (Boston Housing)</h3>
+                  <p class="panel-lead">
+                    Hedonic Real Estate Pricing: Quantifying the marginal willingness to pay for home size, neighborhood amenities, school quality, and environmental health across 506 Boston census tracts.
                   </p>
-                </div>
-                <div class="split-stats-grid">
-                  <div class="stat-badge">
-                    <span class="stat-num">40</span>
-                    <span class="stat-lbl">Train Samples (80%)</span>
+                  <div class="card-feature-list">
+                    <div class="feature-item">
+                      <div class="feature-bullet">1</div>
+                      <div>
+                        <strong>Property Appraisal & Underwriting</strong>
+                        <p>Provides institutional lenders, assessors, and home buyers with an objective, data-driven hedonic benchmark of tract-level real estate values.</p>
+                      </div>
+                    </div>
+                    <div class="feature-item">
+                      <div class="feature-bullet">2</div>
+                      <div>
+                        <strong>Urban Economics & Environmental Penalties</strong>
+                        <p>Quantifies the negative price externalities of air pollution (nitric oxide <code>NOX</code>) and crime (<code>CRIM</code>) against residential capital.</p>
+                      </div>
+                    </div>
+                    <div class="feature-item">
+                      <div class="feature-bullet">3</div>
+                      <div>
+                        <strong>Occam's Razor in Urban Modeling</strong>
+                        <p>Screens 13 demographic, geographical, and structural candidates to eliminate collinearity (e.g., redundant age and tax factors).</p>
+                      </div>
+                    </div>
                   </div>
-                  <div class="stat-badge">
-                    <span class="stat-num">10</span>
-                    <span class="stat-lbl">Test Samples (20%)</span>
-                  </div>
-                  <div class="stat-badge">
-                    <span class="stat-num">5</span>
-                    <span class="stat-lbl">Predictor Features</span>
-                  </div>
                 </div>
-              </div>
-              <div class="panel-sidebar">
-                <div class="sidebar-box">
-                  <h4>Encoded Design Matrix</h4>
-                  <ul class="tag-list">
-                    <li>R&D Spend (Continuous)</li>
-                    <li>Administration (Continuous)</li>
-                    <li>Marketing Spend (Continuous)</li>
-                    <li>State_Florida (0 or 1)</li>
-                    <li>State_New York (0 or 1)</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Phase 4 -->
-          <div class="phase-panel" id="panelPhase4">
-            <div class="panel-grid">
-              <div class="panel-main">
-                <h3 class="panel-title">Phase 4: Modeling (Full 5-Feature Linear Regression)</h3>
-                <p class="panel-lead">
-                  Trained via Ordinary Least Squares (OLS) on the 40-sample training partition.
-                </p>
-                <div class="formula-box">
-                  <code>Predicted Profit = 42,554.17 + 0.7735(R&D) + 0.0329(Admin) + 0.0366(Marketing) - 959.28(Florida) + 699.37(New York)</code>
-                </div>
-                <div class="table-responsive">
-                  <table class="data-table">
-                    <thead>
-                      <tr>
-                        <th>Feature</th>
-                        <th>Coefficient (β)</th>
-                        <th>Standardized Impact</th>
-                        <th>Interpretation</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td><strong>R&D Spend</strong></td>
-                        <td class="text-green font-mono">+0.773467</td>
-                        <td><div class="bar-container"><div class="bar-fill green-bar" style="width: 95%;"></div></div></td>
-                        <td>Strong primary driver. +$0.77 profit per $1 R&D.</td>
-                      </tr>
-                      <tr>
-                        <td><strong>Administration</strong></td>
-                        <td class="text-cyan font-mono">+0.032885</td>
-                        <td><div class="bar-container"><div class="bar-fill cyan-bar" style="width: 5%;"></div></div></td>
-                        <td>Negligible direct influence (~$0.03 per $1).</td>
-                      </tr>
-                      <tr>
-                        <td><strong>Marketing Spend</strong></td>
-                        <td class="text-purple font-mono">+0.036610</td>
-                        <td><div class="bar-container"><div class="bar-fill purple-bar" style="width: 6%;"></div></div></td>
-                        <td>Modest positive contribution (~$0.037 per $1).</td>
-                      </tr>
-                      <tr>
-                        <td><strong>State_Florida</strong></td>
-                        <td class="text-amber font-mono">-959.284</td>
-                        <td><div class="bar-container"><div class="bar-fill amber-bar" style="width: 3%;"></div></div></td>
-                        <td>Relative penalty vs California baseline.</td>
-                      </tr>
-                      <tr>
-                        <td><strong>State_New York</strong></td>
-                        <td class="text-cyan font-mono">+699.369</td>
-                        <td><div class="bar-container"><div class="bar-fill cyan-bar" style="width: 2%;"></div></div></td>
-                        <td>Slight premium vs California baseline.</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-              <div class="panel-sidebar">
-                <div class="sidebar-box">
-                  <h4>Model Coefficients</h4>
-                  <div class="key-value-list">
-                    <div class="kv-row"><span>Intercept:</span> <strong>$42,554.17</strong></div>
-                    <div class="kv-row"><span>Fit Method:</span> <strong>OLS (sklearn)</strong></div>
-                    <div class="kv-row"><span>Train Rows:</span> <strong>40</strong></div>
+                <div class="panel-sidebar">
+                  <div class="sidebar-box">
+                    <h4>Target Variable</h4>
+                    <div class="metric-pill">MEDV ($1,000s)</div>
+                    <h4>13 Predictor Categories</h4>
+                    <ul class="tag-list">
+                      <li>Structural: RM, AGE</li>
+                      <li>Demographic: LSTAT, PTRATIO, B</li>
+                      <li>Environmental: NOX, DIS, CHAS</li>
+                      <li>Economic: TAX, RAD, CRIM, ZN, INDUS</li>
+                    </ul>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- Phase 5 -->
-          <div class="phase-panel" id="panelPhase5">
-            <div class="panel-grid">
-              <div class="panel-main">
-                <h3 class="panel-title">Phase 5: Evaluation (Full Model vs Optimal Subset)</h3>
-                <p class="panel-lead">
-                  Out-of-sample performance on the held-out 10-sample test set.
-                </p>
-                <div class="eval-metrics-grid">
-                  <div class="eval-box">
-                    <span class="eval-lbl">R-Squared (R²)</span>
-                    <span class="eval-val">0.9347</span>
-                    <span class="eval-sub">93.47% test variance explained</span>
-                  </div>
-                  <div class="eval-box">
-                    <span class="eval-lbl">RMSE</span>
-                    <span class="eval-val">$9,137.99</span>
-                    <span class="eval-sub">Root Mean Squared Error</span>
-                  </div>
-                  <div class="eval-box">
-                    <span class="eval-lbl">MAE</span>
-                    <span class="eval-val">$7,514.29</span>
-                    <span class="eval-sub">Mean Absolute Error</span>
-                  </div>
-                  <div class="eval-box">
-                    <span class="eval-lbl">MSE</span>
-                    <span class="eval-val">8.3503 × 10⁷</span>
-                    <span class="eval-sub">Mean Squared Error</span>
+            <!-- Phase 2: Boston -->
+            <div class="phase-panel" id="panelPhase2_boston">
+              <div class="panel-grid">
+                <div class="panel-main">
+                  <h3 class="panel-title">Phase 2: Data Understanding (Boston Housing)</h3>
+                  <p class="panel-lead">506 census tracts, 14 continuous and binary attributes, zero missing values.</p>
+                  <div class="table-responsive">
+                    <table class="data-table">
+                      <thead>
+                        <tr><th>Variable</th><th>Description</th><th>Mean</th><th>Std Dev</th><th>Min</th><th>Max</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr><td><strong>rm</strong></td><td>Average rooms per dwelling</td><td>6.28</td><td>0.70</td><td>3.56</td><td>8.78</td></tr>
+                        <tr><td><strong>lstat</strong></td><td>% Lower status of the population</td><td>12.65%</td><td>7.14%</td><td>1.73%</td><td>37.97%</td></tr>
+                        <tr><td><strong>ptratio</strong></td><td>Pupil-teacher ratio by town</td><td>18.46</td><td>2.16</td><td>12.60</td><td>22.00</td></tr>
+                        <tr><td><strong>crim</strong></td><td>Per capita crime rate by town</td><td>3.61</td><td>8.60</td><td>0.006</td><td>88.98</td></tr>
+                        <tr><td><strong>tax</strong></td><td>Full-value property-tax rate ($/$10k)</td><td>$408.24</td><td>$168.54</td><td>$187</td><td>$711</td></tr>
+                        <tr><td><strong>nox</strong></td><td>Nitric oxides concentration (ppm)</td><td>0.555</td><td>0.116</td><td>0.385</td><td>0.871</td></tr>
+                        <tr><td><strong>chas</strong></td><td>Charles River dummy variable</td><td colspan="4">35 tracts bound river (6.9%), 471 inland</td></tr>
+                        <tr><td><strong>medv (Target)</strong></td><td>Median home value ($1,000s)</td><td>$22.53k</td><td>$9.20k</td><td>$5.00k</td><td>$50.00k</td></tr>
+                      </tbody>
+                    </table>
                   </div>
                 </div>
-
-                <div class="plot-showcase">
-                  <div class="plot-header">
-                    <h4>Actual vs. Predicted Profit Visualization (Test Set)</h4>
-                    <a href="outputs/actual_vs_predicted_profit.png" target="_blank" class="btn btn-sm btn-outline">Full Resolution</a>
+                <div class="panel-sidebar">
+                  <div class="sidebar-box">
+                    <h4>Data Integrity</h4>
+                    <div class="checklist">
+                      <div class="check-item"><span class="check-icon">✓</span> Total observations: 506</div>
+                      <div class="check-item"><span class="check-icon">✓</span> Missing entries: 0</div>
+                      <div class="check-item"><span class="check-icon">✓</span> Charles River tract split: 35 / 471</div>
+                    </div>
                   </div>
-                  <div class="plot-img-container">
-                    <img src="outputs/actual_vs_predicted_profit.png" alt="Actual vs Predicted Profit Scatter Plot" class="plot-img" id="actualVsPredImg">
-                  </div>
-                </div>
-              </div>
-              <div class="panel-sidebar">
-                <div class="sidebar-box">
-                  <h4>Plot Diagnostics</h4>
-                  <p>The scatter points closely track the diagonal 45-degree reference line ($y = x$), indicating homoscedasticity and strong linear fidelity across low and high profit startups.</p>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- Phase 6 -->
-          <div class="phase-panel" id="panelPhase6">
-            <div class="panel-grid">
-              <div class="panel-main">
-                <h3 class="panel-title">Phase 6: Deployment & Artifact Pipeline</h3>
-                <p class="panel-lead">
-                  Automated execution, self-contained artifacts, and practical guidelines for business deployment.
-                </p>
-                <div class="pipeline-flow">
-                  <div class="flow-step">
-                    <div class="flow-num">1</div>
-                    <div class="flow-info">
-                      <strong>startup_regression.py</strong>
-                      <span>Single-command automated pipeline</span>
-                    </div>
+            <!-- Phase 3: Boston -->
+            <div class="phase-panel" id="panelPhase3_boston">
+              <div class="panel-grid">
+                <div class="panel-main">
+                  <h3 class="panel-title">Phase 3: Data Preparation (Boston Housing)</h3>
+                  <p class="panel-lead">Partitioned into 80% Training (404 samples) and 20% Held-out Test Set (102 samples) with <code>random_state=0</code>.</p>
+                  <div class="code-explain-box">
+                    <pre><code>X = df.drop(columns=['medv'])
+y = df['medv']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)</code></pre>
                   </div>
-                  <div class="flow-arrow">➔</div>
-                  <div class="flow-step">
-                    <div class="flow-num">2</div>
-                    <div class="flow-info">
-                      <strong>outputs/forward_selection_results.csv</strong>
-                      <span>Audit-ready tabular metrics</span>
-                    </div>
-                  </div>
-                  <div class="flow-arrow">➔</div>
-                  <div class="flow-step">
-                    <div class="flow-num">3</div>
-                    <div class="flow-info">
-                      <strong>outputs/actual_vs_predicted_profit.png</strong>
-                      <span>Publication-quality 300 DPI plot</span>
-                    </div>
+                  <div class="split-stats-grid">
+                    <div class="stat-badge"><span class="stat-num">404</span><span class="stat-lbl">Train Tracts (80%)</span></div>
+                    <div class="stat-badge"><span class="stat-num">102</span><span class="stat-lbl">Test Tracts (20%)</span></div>
+                    <div class="stat-badge"><span class="stat-num">13</span><span class="stat-lbl">Predictor Attributes</span></div>
                   </div>
                 </div>
-
-                <div class="threats-box">
-                  <h4>Threats to Validity & Limitations</h4>
-                  <ul>
-                    <li><strong>Sample Size ($N=50$):</strong> Benchmark sample; real-world deployment requires ongoing retraining across economic quarters.</li>
-                    <li><strong>Association vs. Causation:</strong> High R&D expenditure correlates with profit, but strategic execution and product-market fit remain vital.</li>
-                  </ul>
+                <div class="panel-sidebar">
+                  <div class="sidebar-box">
+                    <h4>Validation Rigor</h4>
+                    <p>Cross-validation folds are computed strictly on the 404 training samples to eliminate any data leakage into the 102 test set evaluations.</p>
+                  </div>
                 </div>
               </div>
-              <div class="panel-sidebar">
-                <div class="sidebar-box">
-                  <h4>Run Pipeline Locally</h4>
-                  <pre class="cli-box"><code>python startup_regression.py</code></pre>
+            </div>
+
+            <!-- Phase 4: Boston -->
+            <div class="phase-panel" id="panelPhase4_boston">
+              <div class="panel-grid">
+                <div class="panel-main">
+                  <h3 class="panel-title">Phase 4: Modeling (Full 13-Feature OLS Model)</h3>
+                  <div class="formula-box">
+                    <code>Predicted MEDV = 38.09 - 0.119(CRIM) + 0.045(ZN) + 0.005(INDUS) + 2.341(CHAS) - 16.124(NOX) + 3.709(RM) - 0.003(AGE) - 1.386(DIS) + 0.244(RAD) - 0.011(TAX) - 1.046(PTRATIO) + 0.008(B) - 0.493(LSTAT)</code>
+                  </div>
+                  <div class="table-responsive">
+                    <table class="data-table">
+                      <thead><tr><th>Feature</th><th>Coefficient</th><th>Dollar Impact</th><th>Economic Interpretation</th></tr></thead>
+                      <tbody>
+                        <tr><td><strong>rm</strong></td><td class="text-green font-mono">+3.7087</td><td>+$3,709 / room</td><td>Strong positive elasticity; larger homes command high premiums.</td></tr>
+                        <tr><td><strong>chas</strong></td><td class="text-green font-mono">+2.3408</td><td>+$2,341 waterfront</td><td>Scenic Charles River waterfront location premium.</td></tr>
+                        <tr><td><strong>lstat</strong></td><td class="text-amber font-mono">-0.4928</td><td>-$493 / 1% lower status</td><td>Primary neighborhood demographic driver.</td></tr>
+                        <tr><td><strong>ptratio</strong></td><td class="text-amber font-mono">-1.0459</td><td>-$1,046 / pupil-teacher pt</td><td>School district quality factor.</td></tr>
+                        <tr><td><strong>nox</strong></td><td class="text-amber font-mono">-16.1236</td><td>-$16,124 / ppm</td><td>Heavy environmental air pollution penalty.</td></tr>
+                        <tr><td><strong>dis</strong></td><td class="text-amber font-mono">-1.3864</td><td>-$1,386 / mile</td><td>Distance penalty from central Boston job hubs.</td></tr>
+                        <tr><td><strong>crim</strong></td><td class="text-amber font-mono">-0.1194</td><td>-$119 / crime pt</td><td>Crime rate negative externality.</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="panel-sidebar">
+                  <div class="sidebar-box">
+                    <h4>OLS Intercept</h4>
+                    <div class="key-value-list">
+                      <div class="kv-row"><span>β₀ Intercept:</span> <strong>$38.09k ($38,092)</strong></div>
+                      <div class="kv-row"><span>Train R²:</span> <strong>0.773</strong></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Phase 5: Boston -->
+            <div class="phase-panel" id="panelPhase5_boston">
+              <div class="panel-grid">
+                <div class="panel-main">
+                  <h3 class="panel-title">Phase 5: Evaluation (Full Model vs Optimal Subset)</h3>
+                  <div class="eval-metrics-grid">
+                    <div class="eval-box"><span class="eval-lbl">R-Squared (R²)</span><span class="eval-val">0.5892</span><span class="eval-sub">58.92% out-of-sample variance</span></div>
+                    <div class="eval-box"><span class="eval-lbl">RMSE ($k)</span><span class="eval-val">$5,783.51</span><span class="eval-sub">5.7835k on 102 test tracts</span></div>
+                    <div class="eval-box"><span class="eval-lbl">MAE ($k)</span><span class="eval-val">$3,842.91</span><span class="eval-sub">Mean Absolute Error</span></div>
+                    <div class="eval-box"><span class="eval-lbl">MSE</span><span class="eval-val">33.45</span><span class="eval-sub">Mean Squared Error</span></div>
+                  </div>
+                  <div class="plot-showcase">
+                    <div class="plot-header">
+                      <h4>Actual vs. Predicted Housing Values (102 Test Tracts)</h4>
+                      <a href="outputs/boston_actual_vs_predicted.png" target="_blank" class="btn btn-sm btn-outline">Full Resolution</a>
+                    </div>
+                    <div class="plot-img-container">
+                      <img src="outputs/boston_actual_vs_predicted.png" alt="Boston Housing Actual vs Predicted Scatter Plot" class="plot-img">
+                    </div>
+                  </div>
+                </div>
+                <div class="panel-sidebar">
+                  <div class="sidebar-box">
+                    <h4>Test Diagnostics</h4>
+                    <p>Linear predictions track median valuations reliably up to $35k. The classic $50k census right-censoring ceiling causes minor residual spread in upper luxury brackets.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Phase 6: Boston -->
+            <div class="phase-panel" id="panelPhase6_boston">
+              <div class="panel-grid">
+                <div class="panel-main">
+                  <h3 class="panel-title">Phase 6: Deployment & Artifact Pipeline</h3>
+                  <div class="pipeline-flow">
+                    <div class="flow-step"><div class="flow-num">1</div><div class="flow-info"><strong>boston_regression.py</strong><span>Automated pipeline</span></div></div>
+                    <div class="flow-arrow">➔</div>
+                    <div class="flow-step"><div class="flow-num">2</div><div class="flow-info"><strong>boston_forward_selection_results.csv</strong><span>13-step table</span></div></div>
+                    <div class="flow-arrow">➔</div>
+                    <div class="flow-step"><div class="flow-num">3</div><div class="flow-info"><strong>boston_actual_vs_predicted.png</strong><span>300 DPI Plot</span></div></div>
+                  </div>
+                </div>
+                <div class="panel-sidebar">
+                  <div class="sidebar-box">
+                    <h4>Run Pipeline Locally</h4>
+                    <pre class="cli-box"><code>python boston_regression.py</code></pre>
+                  </div>
                 </div>
               </div>
             </div>
@@ -529,17 +774,16 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
           <span class="section-tag">Feature Selection</span>
           <h2 class="section-title">Forward Selection with 5-Fold Cross-Validation</h2>
           <p class="section-desc">
-            Iterative greedy forward selection tested feature subsets from $k=1$ to $k=5$. Each feature was selected based strictly on the <strong>Training Set 5-Fold CV RMSE</strong> (Zero Test Leakage).
+            Iterative greedy forward selection tested feature subsets from $k=1$ to $k=N$. Each feature was selected based strictly on the <strong>Training Set 5-Fold CV RMSE</strong> (Zero Test Leakage).
           </p>
         </div>
 
-        <!-- Forward Selection Results Interactive Chart & Table -->
         <div class="fs-analytics-grid">
-          <!-- Canvas Interactive Chart -->
+          <!-- Canvas Interactive Chart (Dynamically updates when dataset switches) -->
           <div class="fs-chart-card">
             <div class="chart-header">
               <div class="chart-title">
-                <h3>Error & Performance Curves ($k=1$ to $5$)</h3>
+                <h3>Error & Performance Curves</h3>
                 <span class="chart-sub">Comparing Train CV RMSE, Test RMSE, and Test R²</span>
               </div>
               <div class="chart-legend">
@@ -551,21 +795,25 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
             <div class="canvas-wrapper">
               <canvas id="fsChartCanvas" width="700" height="340"></canvas>
             </div>
-            <div class="chart-insight-callout">
+            <!-- Insight callout for Startups -->
+            <div class="chart-insight-callout dataset-content" data-dataset="startups">
               <span class="callout-badge">Optimal Sweet Spot: Step 2</span>
               <span>Training CV RMSE reaches global minimum at <strong>$9,482.34</strong>, Test RMSE drops to <strong>$8,198.80</strong>, and Test R² peaks at <strong>0.9474</strong>.</span>
             </div>
+            <!-- Insight callout for Boston -->
+            <div class="chart-insight-callout dataset-content hidden-dataset" data-dataset="boston">
+              <span class="callout-badge">Optimal Sweet Spot: Step 12</span>
+              <span>Training CV RMSE reaches minimum at <strong>$4,614.30 (4.61k)</strong>, Test RMSE drops to <strong>$5,780.20</strong>, and Test R² peaks at <strong>0.5897</strong> (Excluding redundant building age).</span>
+            </div>
           </div>
 
-          <!-- Step Progression Cards -->
-          <div class="fs-steps-card">
+          <!-- Step Progression Cards: Startups -->
+          <div class="fs-steps-card dataset-content" data-dataset="startups">
             <div class="steps-header">
-              <h3>Iterative Selection Steps</h3>
+              <h3>50 Startups Selection Steps</h3>
               <span class="badge badge-accent">5 Steps Complete</span>
             </div>
-
-            <div class="steps-list" id="fsStepsList">
-              <!-- Step 1 -->
+            <div class="steps-list">
               <div class="step-card" data-step="1">
                 <div class="step-badge">k = 1</div>
                 <div class="step-body">
@@ -577,13 +825,10 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
                   </div>
                 </div>
               </div>
-
-              <!-- Step 2 (Winner) -->
               <div class="step-card winner-card" data-step="2">
                 <div class="step-badge winner-badge">★ k = 2 (Best)</div>
                 <div class="step-body">
                   <div class="step-feature">+ Marketing Spend</div>
-                  <div class="step-features-all">R&D Spend, Marketing Spend</div>
                   <div class="step-metrics">
                     <span class="text-green">Train CV RMSE: <strong>$9,482.34</strong></span>
                     <span class="text-green">Test RMSE: <strong>$8,198.80</strong></span>
@@ -591,8 +836,6 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
                   </div>
                 </div>
               </div>
-
-              <!-- Step 3 -->
               <div class="step-card" data-step="3">
                 <div class="step-badge">k = 3</div>
                 <div class="step-body">
@@ -604,8 +847,6 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
                   </div>
                 </div>
               </div>
-
-              <!-- Step 4 -->
               <div class="step-card" data-step="4">
                 <div class="step-badge">k = 4</div>
                 <div class="step-body">
@@ -617,8 +858,6 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
                   </div>
                 </div>
               </div>
-
-              <!-- Step 5 -->
               <div class="step-card" data-step="5">
                 <div class="step-badge">k = 5</div>
                 <div class="step-body">
@@ -632,76 +871,80 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
               </div>
             </div>
           </div>
+
+          <!-- Step Progression Cards: Boston Housing -->
+          <div class="fs-steps-card dataset-content hidden-dataset" data-dataset="boston">
+            <div class="steps-header">
+              <h3>Boston Housing Selection Steps</h3>
+              <span class="badge badge-accent">13 Steps Complete</span>
+            </div>
+            <div class="steps-list" style="max-height: 480px; overflow-y: auto;">
+              <div class="step-card"><div class="step-badge">k = 1</div><div class="step-body"><div class="step-feature">+ lstat (% Lower Status)</div><div class="step-metrics"><span>CV RMSE: <strong>$6,047</strong></span><span>Test RMSE: $6,807</span><span>R²: 0.4310</span></div></div></div>
+              <div class="step-card"><div class="step-badge">k = 2</div><div class="step-body"><div class="step-feature">+ ptratio (Pupil-Teacher)</div><div class="step-metrics"><span>CV RMSE: <strong>$5,416</strong></span><span>Test RMSE: $7,175</span><span>R²: 0.3677</span></div></div></div>
+              <div class="step-card"><div class="step-badge">k = 3</div><div class="step-body"><div class="step-feature">+ rm (Average Rooms)</div><div class="step-metrics"><span>CV RMSE: <strong>$4,939</strong></span><span>Test RMSE: $6,456</span><span>R²: 0.4882</span></div></div></div>
+              <div class="step-card"><div class="step-badge">k = 4</div><div class="step-body"><div class="step-feature">+ b (Ethnic Index)</div><div class="step-metrics"><span>CV RMSE: <strong>$4,874</strong></span><span>Test RMSE: $6,384</span><span>R²: 0.4996</span></div></div></div>
+              <div class="step-card"><div class="step-badge">k = 5</div><div class="step-body"><div class="step-feature">+ chas (Charles River)</div><div class="step-metrics"><span>CV RMSE: <strong>$4,826</strong></span><span>Test RMSE: $6,294</span><span>R²: 0.5135</span></div></div></div>
+              <div class="step-card"><div class="step-badge">k = 6</div><div class="step-body"><div class="step-feature">+ dis (Employment Distance)</div><div class="step-metrics"><span>CV RMSE: <strong>$4,797</strong></span><span>Test RMSE: $6,085</span><span>R²: 0.5452</span></div></div></div>
+              <div class="step-card"><div class="step-badge">k = 7</div><div class="step-body"><div class="step-feature">+ nox (Nitric Oxide)</div><div class="step-metrics"><span>CV RMSE: <strong>$4,681</strong></span><span>Test RMSE: $5,973</span><span>R²: 0.5619</span></div></div></div>
+              <div class="step-card"><div class="step-badge">k = 8</div><div class="step-body"><div class="step-feature">+ crim (Crime Rate)</div><div class="step-metrics"><span>CV RMSE: <strong>$4,666</strong></span><span>Test RMSE: $6,016</span><span>R²: 0.5556</span></div></div></div>
+              <div class="step-card"><div class="step-badge">k = 9</div><div class="step-body"><div class="step-feature">+ zn (Residential Zoning)</div><div class="step-metrics"><span>CV RMSE: <strong>$4,656</strong></span><span>Test RMSE: $5,958</span><span>R²: 0.5640</span></div></div></div>
+              <div class="step-card"><div class="step-badge">k = 10</div><div class="step-body"><div class="step-feature">+ indus (Non-retail acres)</div><div class="step-metrics"><span>CV RMSE: <strong>$4,656</strong></span><span>Test RMSE: $5,971</span><span>R²: 0.5622</span></div></div></div>
+              <div class="step-card"><div class="step-badge">k = 11</div><div class="step-body"><div class="step-feature">+ rad (Highway Index)</div><div class="step-metrics"><span>CV RMSE: <strong>$4,667</strong></span><span>Test RMSE: $5,858</span><span>R²: 0.5785</span></div></div></div>
+              <div class="step-card winner-card"><div class="step-badge winner-badge">★ k = 12 (Best)</div><div class="step-body"><div class="step-feature">+ tax (Property Tax Rate)</div><div class="step-metrics"><span class="text-green">CV RMSE: <strong>$4,614</strong></span><span class="text-green">Test RMSE: <strong>$5,780</strong></span><span class="text-green">Test R²: <strong>0.5897</strong></span></div></div></div>
+              <div class="step-card"><div class="step-badge">k = 13</div><div class="step-body"><div class="step-feature">+ age (Building Age)</div><div class="step-metrics"><span>CV RMSE: $4,649 <span class="trend-warn">▲ +35.0</span></span><span>Test RMSE: $5,784</span><span>Test R²: 0.5892</span></div></div></div>
+            </div>
+          </div>
         </div>
 
-        <!-- Full Results Table -->
-        <div class="fs-table-card">
+        <!-- Full Results Table: Startups -->
+        <div class="fs-table-card dataset-content" data-dataset="startups">
           <div class="card-header-flex">
-            <h3>Complete Forward Selection Results Table (CSV View)</h3>
+            <h3>Complete Forward Selection Results Table (50 Startups)</h3>
             <a href="outputs/forward_selection_results.csv" download class="btn btn-sm btn-outline">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
               Download CSV
             </a>
           </div>
           <div class="table-responsive">
-            <table class="data-table fs-table" id="fsDataTable">
-              <thead>
-                <tr>
-                  <th>Step (k)</th>
-                  <th>Added Feature</th>
-                  <th>Selected Features List</th>
-                  <th>Train 5-Fold CV RMSE ($)</th>
-                  <th>Test RMSE ($)</th>
-                  <th>Test R-squared</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
+            <table class="data-table fs-table">
+              <thead><tr><th>Step (k)</th><th>Added Feature</th><th>Selected Features List</th><th>Train 5-Fold CV RMSE</th><th>Test RMSE</th><th>Test R²</th><th>Status</th></tr></thead>
               <tbody>
-                <tr>
-                  <td><strong>1</strong></td>
-                  <td>R&D Spend</td>
-                  <td><code>R&D Spend</code></td>
-                  <td>$9,745.40</td>
-                  <td>$8,274.87</td>
-                  <td>0.9465</td>
-                  <td><span class="status-pill">Baseline</span></td>
-                </tr>
-                <tr class="table-row-highlight">
-                  <td><strong>2</strong></td>
-                  <td><strong>Marketing Spend</strong></td>
-                  <td><code>R&D Spend, Marketing Spend</code></td>
-                  <td><strong class="text-green">$9,482.34</strong></td>
-                  <td><strong class="text-green">$8,198.80</strong></td>
-                  <td><strong class="text-green">0.9474</strong></td>
-                  <td><span class="status-pill status-optimal">★ Optimal Model</span></td>
-                </tr>
-                <tr>
-                  <td><strong>3</strong></td>
-                  <td>Administration</td>
-                  <td><code>R&D Spend, Marketing Spend, Administration</code></td>
-                  <td>$9,678.08</td>
-                  <td>$8,803.78</td>
-                  <td>0.9394</td>
-                  <td><span class="status-pill status-degrade">Overfitting Begins</span></td>
-                </tr>
-                <tr>
-                  <td><strong>4</strong></td>
-                  <td>State_Florida</td>
-                  <td><code>R&D Spend, Marketing Spend, Administration, State_Florida</code></td>
-                  <td>$9,885.56</td>
-                  <td>$9,068.54</td>
-                  <td>0.9357</td>
-                  <td><span class="status-pill status-degrade">Increased Variance</span></td>
-                </tr>
-                <tr>
-                  <td><strong>5</strong></td>
-                  <td>State_New York</td>
-                  <td><code>R&D Spend, Marketing Spend, Administration, State_Florida, State_New York</code></td>
-                  <td>$10,158.66</td>
-                  <td>$9,137.99</td>
-                  <td>0.9347</td>
-                  <td><span class="status-pill status-full">Full Model</span></td>
-                </tr>
+                <tr><td>1</td><td>R&D Spend</td><td><code>R&D Spend</code></td><td>$9,745.40</td><td>$8,274.87</td><td>0.9465</td><td><span class="status-pill">Baseline</span></td></tr>
+                <tr class="table-row-highlight"><td>2</td><td><strong>Marketing Spend</strong></td><td><code>R&D Spend, Marketing Spend</code></td><td><strong class="text-green">$9,482.34</strong></td><td><strong class="text-green">$8,198.80</strong></td><td><strong class="text-green">0.9474</strong></td><td><span class="status-pill status-optimal">★ Optimal Model</span></td></tr>
+                <tr><td>3</td><td>Administration</td><td><code>R&D Spend, Marketing Spend, Administration</code></td><td>$9,678.08</td><td>$8,803.78</td><td>0.9394</td><td><span class="status-pill status-degrade">Overfitting Begins</span></td></tr>
+                <tr><td>4</td><td>State_Florida</td><td><code>R&D, Marketing, Admin, State_Florida</code></td><td>$9,885.56</td><td>$9,068.54</td><td>0.9357</td><td><span class="status-pill status-degrade">Increased Variance</span></td></tr>
+                <tr><td>5</td><td>State_New York</td><td><code>All 5 Features</code></td><td>$10,158.66</td><td>$9,137.99</td><td>0.9347</td><td><span class="status-pill status-full">Full Model</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Full Results Table: Boston Housing -->
+        <div class="fs-table-card dataset-content hidden-dataset" data-dataset="boston">
+          <div class="card-header-flex">
+            <h3>Complete Forward Selection Results Table (Boston Housing)</h3>
+            <a href="outputs/boston_forward_selection_results.csv" download class="btn btn-sm btn-outline">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Download CSV
+            </a>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table fs-table">
+              <thead><tr><th>Step (k)</th><th>Added Feature</th><th>Selected Features List</th><th>Train 5-Fold CV RMSE</th><th>Test RMSE</th><th>Test R²</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td>lstat</td><td><code>lstat</code></td><td>$6,046.80</td><td>$6,807.10</td><td>0.4310</td><td><span class="status-pill">Primary Demographic</span></td></tr>
+                <tr><td>2</td><td>ptratio</td><td><code>lstat, ptratio</code></td><td>$5,416.30</td><td>$7,175.20</td><td>0.3677</td><td><span class="status-pill">School Quality</span></td></tr>
+                <tr><td>3</td><td>rm</td><td><code>lstat, ptratio, rm</code></td><td>$4,939.20</td><td>$6,455.80</td><td>0.4882</td><td><span class="status-pill">Core Hedonic (3-feat)</span></td></tr>
+                <tr><td>4</td><td>b</td><td><code>lstat, ptratio, rm, b</code></td><td>$4,874.10</td><td>$6,383.60</td><td>0.4996</td><td><span class="status-pill">Demographic Baseline</span></td></tr>
+                <tr><td>5</td><td>chas</td><td><code>... + chas</code></td><td>$4,826.30</td><td>$6,293.90</td><td>0.5135</td><td><span class="status-pill">Waterfront Premium</span></td></tr>
+                <tr><td>6</td><td>dis</td><td><code>... + dis</code></td><td>$4,797.10</td><td>$6,085.40</td><td>0.5452</td><td><span class="status-pill">Commute Distance</span></td></tr>
+                <tr><td>7</td><td>nox</td><td><code>... + nox</code></td><td>$4,681.10</td><td>$5,972.90</td><td>0.5619</td><td><span class="status-pill">Pollution Penalty</span></td></tr>
+                <tr><td>8</td><td>crim</td><td><code>... + crim</code></td><td>$4,665.60</td><td>$6,015.60</td><td>0.5556</td><td><span class="status-pill">Crime Penalty</span></td></tr>
+                <tr><td>9</td><td>zn</td><td><code>... + zn</code></td><td>$4,656.10</td><td>$5,958.20</td><td>0.5640</td><td><span class="status-pill">Large Lot Zoning</span></td></tr>
+                <tr><td>10</td><td>indus</td><td><code>... + indus</code></td><td>$4,656.00</td><td>$5,970.70</td><td>0.5622</td><td><span class="status-pill">Commercial Land</span></td></tr>
+                <tr><td>11</td><td>rad</td><td><code>... + rad</code></td><td>$4,666.80</td><td>$5,858.30</td><td>0.5785</td><td><span class="status-pill">Highway Accessibility</span></td></tr>
+                <tr class="table-row-highlight"><td>12</td><td><strong>tax</strong></td><td><code>12 features (all except age)</code></td><td><strong class="text-green">$4,614.30</strong></td><td><strong class="text-green">$5,780.20</strong></td><td><strong class="text-green">0.5897</strong></td><td><span class="status-pill status-optimal">★ Optimal Model</span></td></tr>
+                <tr><td>13</td><td>age</td><td><code>All 13 Features</code></td><td>$4,649.30</td><td>$5,783.51</td><td>0.5892</td><td><span class="status-pill status-full">Full Model (Redundant Age)</span></td></tr>
               </tbody>
             </table>
           </div>
@@ -709,155 +952,231 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
       </div>
     </section>
 
-    <!-- Interactive Startup Profit Simulator -->
+    <!-- Interactive Simulator Section -->
     <section class="section simulator-section" id="simulator-section">
       <div class="section-container">
-        <div class="section-header">
-          <span class="section-tag">Interactive Tool</span>
-          <h2 class="section-title">Live Startup Profit Prediction Engine</h2>
-          <p class="section-desc">
-            Adjust budget inputs across spending categories and geography to calculate expected profit in real-time, powered directly by our trained scikit-learn coefficients.
-          </p>
-        </div>
-
-        <div class="simulator-layout">
-          <!-- Controls Column -->
-          <div class="sim-card controls-card">
-            <div class="sim-card-header">
-              <h3>Input Startup Financials</h3>
-              <button class="btn btn-xs btn-outline" id="btnResetSim">Reset Defaults</button>
-            </div>
-
-            <!-- Model Selector -->
-            <div class="form-group">
-              <label for="simModelSelect" class="input-label">
-                Active Prediction Model:
-                <span class="label-info">Switch between Optimal and Full models</span>
-              </label>
-              <select id="simModelSelect" class="form-select">
-                <option value="optimal" selected>★ Optimal Model (k=2: R&D + Marketing, R² = 0.9474)</option>
-                <option value="full">Full Baseline Model (k=5: All Features, R² = 0.9347)</option>
-                <option value="compare">Compare Both Models Side-by-Side</option>
-              </select>
-            </div>
-
-            <!-- R&D Spend Slider -->
-            <div class="slider-group">
-              <div class="slider-header">
-                <label for="rangeRd" class="slider-title">R&D Spend ($)</label>
-                <span class="slider-display" id="displayRd">$100,000</span>
-              </div>
-              <input type="range" id="rangeRd" min="0" max="250000" step="1000" value="100000" class="slider-input">
-              <div class="slider-ticks">
-                <span>$0</span>
-                <span>$100k</span>
-                <span>$250k</span>
-              </div>
-            </div>
-
-            <!-- Marketing Spend Slider -->
-            <div class="slider-group">
-              <div class="slider-header">
-                <label for="rangeMarketing" class="slider-title">Marketing Spend ($)</label>
-                <span class="slider-display" id="displayMarketing">$250,000</span>
-              </div>
-              <input type="range" id="rangeMarketing" min="0" max="500000" step="2500" value="250000" class="slider-input">
-              <div class="slider-ticks">
-                <span>$0</span>
-                <span>$250k</span>
-                <span>$500k</span>
-              </div>
-            </div>
-
-            <!-- Administration Spend Slider -->
-            <div class="slider-group" id="groupAdmin">
-              <div class="slider-header">
-                <label for="rangeAdmin" class="slider-title">Administration Spend ($)</label>
-                <span class="slider-display" id="displayAdmin">$120,000</span>
-              </div>
-              <input type="range" id="rangeAdmin" min="30000" max="250000" step="1000" value="120000" class="slider-input">
-              <div class="slider-ticks">
-                <span>$30k</span>
-                <span>$120k</span>
-                <span>$250k</span>
-              </div>
-              <div class="slider-note" id="adminNotice">Ignored in Optimal 2-feature model to prevent variance inflation.</div>
-            </div>
-
-            <!-- State Selector -->
-            <div class="form-group" id="groupState">
-              <label for="selectState" class="input-label">Headquarters State:</label>
-              <select id="selectState" class="form-select">
-                <option value="California" selected>California (Baseline Reference)</option>
-                <option value="New York">New York</option>
-                <option value="Florida">Florida</option>
-              </select>
-            </div>
+        <!-- 50 Startups Simulator -->
+        <div class="dataset-content" data-dataset="startups">
+          <div class="section-header">
+            <span class="section-tag">Interactive Tool</span>
+            <h2 class="section-title">Live Startup Profit Prediction Engine</h2>
+            <p class="section-desc">Adjust budget inputs across spending categories and geography to calculate expected profit in real-time, powered directly by our trained scikit-learn coefficients.</p>
           </div>
 
-          <!-- Live Output Column -->
-          <div class="sim-card results-card">
-            <div class="sim-card-header">
-              <h3>Real-Time Prediction Output</h3>
-              <span class="live-indicator"><span class="live-dot"></span> Live Math</span>
-            </div>
+          <div class="simulator-layout">
+            <div class="sim-card controls-card">
+              <div class="sim-card-header">
+                <h3>Input Startup Financials</h3>
+                <button class="btn btn-xs btn-outline" id="btnResetSim">Reset Defaults</button>
+              </div>
 
-            <!-- Main Predicted Profit -->
-            <div class="primary-result-box" id="singleResultBox">
-              <div class="res-label" id="resModelLabel">Projected Operating Profit (Optimal Model)</div>
-              <div class="res-value" id="valPredictedProfit">$133,352.33</div>
-              <div class="res-meta">
-                <span class="meta-tag" id="valProfitMargin">Estimated ROI: +28.3%</span>
-                <span class="meta-tag" id="valTotalSpend">Total Spend: $470,000</span>
+              <div class="form-group">
+                <label for="simModelSelect" class="input-label">Active Prediction Model:</label>
+                <select id="simModelSelect" class="form-select">
+                  <option value="optimal" selected>★ Optimal Model (k=2: R&D + Marketing, R² = 0.9474)</option>
+                  <option value="full">Full Baseline Model (k=5: All Features, R² = 0.9347)</option>
+                  <option value="compare">Compare Both Models Side-by-Side</option>
+                </select>
+              </div>
+
+              <div class="slider-group">
+                <div class="slider-header"><label for="rangeRd" class="slider-title">R&D Spend ($)</label><span class="slider-display" id="displayRd">$100,000</span></div>
+                <input type="range" id="rangeRd" min="0" max="250000" step="1000" value="100000" class="slider-input">
+              </div>
+
+              <div class="slider-group">
+                <div class="slider-header"><label for="rangeMarketing" class="slider-title">Marketing Spend ($)</label><span class="slider-display" id="displayMarketing">$250,000</span></div>
+                <input type="range" id="rangeMarketing" min="0" max="500000" step="2500" value="250000" class="slider-input">
+              </div>
+
+              <div class="slider-group" id="groupAdmin">
+                <div class="slider-header"><label for="rangeAdmin" class="slider-title">Administration Spend ($)</label><span class="slider-display" id="displayAdmin">$120,000</span></div>
+                <input type="range" id="rangeAdmin" min="30000" max="250000" step="1000" value="120000" class="slider-input">
+                <div class="slider-note" id="adminNotice">Ignored in Optimal 2-feature model to prevent variance inflation.</div>
+              </div>
+
+              <div class="form-group" id="groupState">
+                <label for="selectState" class="input-label">Headquarters State:</label>
+                <select id="selectState" class="form-select">
+                  <option value="California" selected>California (Baseline Reference)</option>
+                  <option value="New York">New York</option>
+                  <option value="Florida">Florida</option>
+                </select>
               </div>
             </div>
 
-            <!-- Dual Compare Box (Hidden by default) -->
-            <div class="dual-compare-box hidden" id="dualCompareBox">
-              <div class="compare-col optimal-col">
-                <div class="comp-label">Optimal Model (k=2)</div>
-                <div class="comp-val text-green" id="compValOptimal">$133,352</div>
-                <div class="comp-sub">Test R² = 0.9474 (RMSE: $8,198)</div>
+            <div class="sim-card results-card">
+              <div class="sim-card-header">
+                <h3>Real-Time Prediction Output</h3>
+                <span class="live-indicator"><span class="live-dot"></span> Live Math</span>
               </div>
-              <div class="compare-col full-col">
-                <div class="comp-label">Full Model (k=5)</div>
-                <div class="comp-val text-cyan" id="compValFull">$133,028</div>
-                <div class="comp-sub">Test R² = 0.9347 (RMSE: $9,137)</div>
+
+              <div class="primary-result-box" id="singleResultBox">
+                <div class="res-label" id="resModelLabel">Projected Operating Profit (Optimal Model)</div>
+                <div class="res-value" id="valPredictedProfit">$133,352.33</div>
+                <div class="res-meta">
+                  <span class="meta-tag" id="valProfitMargin">Estimated ROI: +28.3%</span>
+                  <span class="meta-tag" id="valTotalSpend">Total Spend: $470,000</span>
+                </div>
+              </div>
+
+              <div class="dual-compare-box hidden" id="dualCompareBox">
+                <div class="compare-col optimal-col">
+                  <div class="comp-label">Optimal Model (k=2)</div>
+                  <div class="comp-val text-green" id="compValOptimal">$133,352</div>
+                  <div class="comp-sub">Test R² = 0.9474 (RMSE: $8,198)</div>
+                </div>
+                <div class="compare-col full-col">
+                  <div class="comp-label">Full Model (k=5)</div>
+                  <div class="comp-val text-cyan" id="compValFull">$133,028</div>
+                  <div class="comp-sub">Test R² = 0.9347 (RMSE: $9,137)</div>
+                </div>
+              </div>
+
+              <div class="contribution-section">
+                <h4>Profit Attribution Breakdown</h4>
+                <div class="contrib-bars">
+                  <div class="contrib-row"><span class="contrib-name">Base Intercept (β₀)</span><div class="contrib-track"><div class="contrib-fill fill-base" id="barBase" style="width: 35%;"></div></div><span class="contrib-amount" id="amtBase">+$46,346</span></div>
+                  <div class="contrib-row"><span class="contrib-name">R&D Impact</span><div class="contrib-track"><div class="contrib-fill fill-rd" id="barRd" style="width: 55%;"></div></div><span class="contrib-amount" id="amtRd">+$78,862</span></div>
+                  <div class="contrib-row"><span class="contrib-name">Marketing Impact</span><div class="contrib-track"><div class="contrib-fill fill-marketing" id="barMarketing" style="width: 10%;"></div></div><span class="contrib-amount" id="amtMarketing">+$8,144</span></div>
+                  <div class="contrib-row" id="rowAdmin"><span class="contrib-name">Admin Impact</span><div class="contrib-track"><div class="contrib-fill fill-admin" id="barAdmin" style="width: 0%;"></div></div><span class="contrib-amount" id="amtAdmin">$0.00</span></div>
+                </div>
+              </div>
+
+              <div class="advisor-box">
+                <div class="advisor-icon">💡</div>
+                <div class="advisor-text">
+                  <strong>Executive Insight:</strong> Every $10,000 shifted from Administration into R&D yields an estimated net gain of <strong>+$7,400 to +$7,500</strong> in bottom-line startup profitability.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Boston Housing Value Estimator -->
+        <div class="dataset-content hidden-dataset" data-dataset="boston">
+          <div class="section-header">
+            <span class="section-tag">Interactive Appraisal Engine</span>
+            <h2 class="section-title">Live Boston Home Valuation Estimator</h2>
+            <p class="section-desc">Simulate tract-level residential home values in real-time by tuning rooms, demographics, school quality, pollution, and waterfront proximity.</p>
+          </div>
+
+          <div class="simulator-layout">
+            <div class="sim-card controls-card">
+              <div class="sim-card-header">
+                <h3>Input Property Attributes</h3>
+                <button class="btn btn-xs btn-outline" id="btnResetBostonSim">Reset Defaults</button>
+              </div>
+
+              <!-- Quick Presets -->
+              <span class="preset-pills-label">Quick Scenario Presets:</span>
+              <div class="preset-pills">
+                <button class="preset-btn" data-preset="luxury">🌟 Beacon Hill Waterfront</button>
+                <button class="preset-btn" data-preset="suburban">🏡 Suburban Family Haven</button>
+                <button class="preset-btn" data-preset="urban">🏢 Urban Mid-Market</button>
+                <button class="preset-btn" data-preset="industrial">🏭 Industrial District</button>
+              </div>
+
+              <div class="form-group">
+                <label for="bostonModelSelect" class="input-label">Valuation Model:</label>
+                <select id="bostonModelSelect" class="form-select">
+                  <option value="optimal" selected>★ Optimal Model (k=12: Excludes Age, R² = 0.5897, RMSE: $5,780)</option>
+                  <option value="full">Full Baseline Model (k=13: All Features, R² = 0.5892)</option>
+                  <option value="core">Core 3-Feature Hedonic Model (RM, LSTAT, PTRATIO)</option>
+                  <option value="compare">Compare Side-by-Side (Optimal vs Full)</option>
+                </select>
+              </div>
+
+              <!-- Compact 2-column Slider Grid -->
+              <div class="sim-sliders-grid">
+                <div class="slider-group">
+                  <div class="slider-header"><label for="bostonRangeRm" class="slider-title">Average Rooms (RM)</label><span class="slider-display" id="displayBostonRm">6.2 rooms</span></div>
+                  <input type="range" id="bostonRangeRm" min="3.5" max="8.8" step="0.1" value="6.2" class="slider-input">
+                </div>
+
+                <div class="slider-group">
+                  <div class="slider-header"><label for="bostonRangeLstat" class="slider-title">% Lower Status (LSTAT)</label><span class="slider-display" id="displayBostonLstat">12.0%</span></div>
+                  <input type="range" id="bostonRangeLstat" min="1.7" max="38.0" step="0.5" value="12.0" class="slider-input">
+                </div>
+
+                <div class="slider-group">
+                  <div class="slider-header"><label for="bostonRangePtratio" class="slider-title">Pupil-Teacher Ratio (PTRATIO)</label><span class="slider-display" id="displayBostonPtratio">18.5:1</span></div>
+                  <input type="range" id="bostonRangePtratio" min="12.6" max="22.0" step="0.2" value="18.5" class="slider-input">
+                </div>
+
+                <div class="slider-group">
+                  <div class="slider-header"><label for="bostonRangeCrim" class="slider-title">Crime Rate (CRIM)</label><span class="slider-display" id="displayBostonCrim">3.60</span></div>
+                  <input type="range" id="bostonRangeCrim" min="0.0" max="50.0" step="0.5" value="3.6" class="slider-input">
+                </div>
+
+                <div class="slider-group">
+                  <div class="slider-header"><label for="bostonRangeTax" class="slider-title">Tax Rate / $10k (TAX)</label><span class="slider-display" id="displayBostonTax">$400</span></div>
+                  <input type="range" id="bostonRangeTax" min="187" max="711" step="10" value="400" class="slider-input">
+                </div>
+
+                <div class="slider-group">
+                  <div class="slider-header"><label for="bostonRangeDis" class="slider-title">Job Distance (DIS)</label><span class="slider-display" id="displayBostonDis">3.8 mi</span></div>
+                  <input type="range" id="bostonRangeDis" min="1.1" max="12.0" step="0.2" value="3.8" class="slider-input">
+                </div>
+
+                <div class="slider-group">
+                  <div class="slider-header"><label for="bostonRangeNox" class="slider-title">Pollution ppm (NOX)</label><span class="slider-display" id="displayBostonNox">0.55 ppm</span></div>
+                  <input type="range" id="bostonRangeNox" min="0.38" max="0.87" step="0.01" value="0.55" class="slider-input">
+                </div>
+
+                <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-top: 18px;">
+                  <input type="checkbox" id="bostonCheckChas" style="width: 20px; height: 20px; accent-color: var(--accent-cyan); cursor: pointer;">
+                  <label for="bostonCheckChas" style="cursor: pointer; font-size: 0.92rem; font-weight: 600;">
+                    Charles River Waterfront Tract (CHAS)
+                  </label>
+                </div>
               </div>
             </div>
 
-            <!-- Contribution Waterfall Breakdown -->
-            <div class="contribution-section">
-              <h4>Profit Attribution Breakdown</h4>
-              <div class="contrib-bars" id="contribBars">
-                <div class="contrib-row">
-                  <span class="contrib-name">Base Intercept (β₀)</span>
-                  <div class="contrib-track"><div class="contrib-fill fill-base" id="barBase" style="width: 35%;"></div></div>
-                  <span class="contrib-amount" id="amtBase">+$46,346</span>
-                </div>
-                <div class="contrib-row">
-                  <span class="contrib-name">R&D Impact</span>
-                  <div class="contrib-track"><div class="contrib-fill fill-rd" id="barRd" style="width: 55%;"></div></div>
-                  <span class="contrib-amount" id="amtRd">+$78,862</span>
-                </div>
-                <div class="contrib-row">
-                  <span class="contrib-name">Marketing Impact</span>
-                  <div class="contrib-track"><div class="contrib-fill fill-marketing" id="barMarketing" style="width: 10%;"></div></div>
-                  <span class="contrib-amount" id="amtMarketing">+$8,144</span>
-                </div>
-                <div class="contrib-row" id="rowAdmin">
-                  <span class="contrib-name">Admin Impact</span>
-                  <div class="contrib-track"><div class="contrib-fill fill-admin" id="barAdmin" style="width: 0%;"></div></div>
-                  <span class="contrib-amount" id="amtAdmin">$0.00</span>
+            <div class="sim-card results-card">
+              <div class="sim-card-header">
+                <h3>Real-Time Appraisal Valuation</h3>
+                <span class="live-indicator"><span class="live-dot"></span> Live OLS</span>
+              </div>
+
+              <div class="primary-result-box" id="bostonSingleResultBox">
+                <div class="res-label" id="bostonResModelLabel">Projected Median Home Value (Optimal Model)</div>
+                <div class="res-value text-green" id="valBostonPredictedPrice">$23,540 ($23.54k)</div>
+                <div class="res-meta">
+                  <span class="meta-tag" id="valBostonConfidenceBand">95% Confidence Band: $17,760 – $29,320</span>
+                  <span class="meta-tag" id="valBostonTaxAssessment">Est. Property Tax: $942/yr</span>
                 </div>
               </div>
-            </div>
 
-            <!-- Strategic Advice Box -->
-            <div class="advisor-box">
-              <div class="advisor-icon">💡</div>
-              <div class="advisor-text">
-                <strong>Executive Insight:</strong> Every $10,000 shifted from Administration into R&D yields an estimated net gain of <strong>+$7,400 to +$7,500</strong> in bottom-line startup profitability.
+              <div class="dual-compare-box hidden" id="bostonDualCompareBox">
+                <div class="compare-col optimal-col">
+                  <div class="comp-label">Optimal Model (k=12)</div>
+                  <div class="comp-val text-green" id="compBostonValOptimal">$23,540</div>
+                  <div class="comp-sub">Test R² = 0.5897 (RMSE: $5,780)</div>
+                </div>
+                <div class="compare-col full-col">
+                  <div class="comp-label">Full Model (k=13)</div>
+                  <div class="comp-val text-cyan" id="compBostonValFull">$23,510</div>
+                  <div class="comp-sub">Test R² = 0.5892 (RMSE: $5,784)</div>
+                </div>
+              </div>
+
+              <div class="contribution-section">
+                <h4>Hedonic Value Attribution Breakdown</h4>
+                <div class="contrib-bars">
+                  <div class="contrib-row"><span class="contrib-name">Base Intercept (β₀)</span><div class="contrib-track"><div class="contrib-fill fill-base" id="barBostonBase" style="width: 50%;"></div></div><span class="contrib-amount" id="amtBostonBase">+$38,195</span></div>
+                  <div class="contrib-row"><span class="contrib-name">Room Count Premium (RM)</span><div class="contrib-track"><div class="contrib-fill fill-rd" id="barBostonRm" style="width: 60%;"></div></div><span class="contrib-amount text-green" id="amtBostonRm">+$22,875</span></div>
+                  <div class="contrib-row"><span class="contrib-name">Demographic Impact (LSTAT)</span><div class="contrib-track"><div class="contrib-fill fill-marketing" id="barBostonLstat" style="width: 30%;"></div></div><span class="contrib-amount text-amber" id="amtBostonLstat">-$5,964</span></div>
+                  <div class="contrib-row"><span class="contrib-name">School District (PTRATIO)</span><div class="contrib-track"><div class="contrib-fill fill-admin" id="barBostonPtratio" style="width: 40%;"></div></div><span class="contrib-amount text-amber" id="amtBostonPtratio">-$19,381</span></div>
+                  <div class="contrib-row"><span class="contrib-name">Charles River Waterfront</span><div class="contrib-track"><div class="contrib-fill fill-base" id="barBostonChas" style="width: 15%;"></div></div><span class="contrib-amount text-cyan" id="amtBostonChas">$0 (Inland)</span></div>
+                </div>
+              </div>
+
+              <div class="advisor-box">
+                <div class="advisor-icon">🏛️</div>
+                <div class="advisor-text">
+                  <strong>Hedonic Valuation Rule:</strong> Each additional bedroom / room adds approximately <strong>+$3,690 to +$3,710</strong> in property value, while tracts bordering the Charles River command an immediate <strong>+$2,340</strong> waterfront premium.
+                </div>
               </div>
             </div>
           </div>
@@ -865,55 +1184,109 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
       </div>
     </section>
 
-    <!-- 50 Startups Interactive Dataset Explorer -->
+    <!-- Dataset Explorer Section -->
     <section class="section dataset-section" id="dataset-section">
       <div class="section-container">
-        <div class="section-header">
-          <span class="section-tag">Raw Data</span>
-          <h2 class="section-title">50 Startups Dataset Explorer</h2>
-          <p class="section-desc">Search, filter by state, and sort all 50 startup records used to train and validate our regression pipeline.</p>
+        <!-- 50 Startups Explorer -->
+        <div class="dataset-content" data-dataset="startups">
+          <div class="section-header">
+            <span class="section-tag">Raw Data</span>
+            <h2 class="section-title">50 Startups Dataset Explorer</h2>
+            <p class="section-desc">Search, filter by state, and sort all 50 startup records used to train and validate our regression pipeline.</p>
+          </div>
+
+          <div class="dataset-card">
+            <div class="dataset-toolbar">
+              <div class="search-box">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="datasetSearch" placeholder="Search startup records (e.g. California, 165000)..." class="search-input">
+              </div>
+
+              <div class="filter-pills" id="stateFilterPills">
+                <button class="filter-pill active" data-state="all">All States (50)</button>
+                <button class="filter-pill" data-state="California">California (17)</button>
+                <button class="filter-pill" data-state="New York">New York (17)</button>
+                <button class="filter-pill" data-state="Florida">Florida (16)</button>
+              </div>
+            </div>
+
+            <div class="dataset-stats-bar" id="datasetStatsBar">
+              <span>Showing <strong id="visibleCount">50</strong> of 50 Startups</span>
+              <span>Avg Profit: <strong id="avgProfitDisplay">$112,012.64</strong></span>
+              <span>Avg R&D: <strong id="avgRdDisplay">$73,721.62</strong></span>
+            </div>
+
+            <div class="table-responsive">
+              <table class="data-table interactive-table" id="interactiveStartupsTable">
+                <thead>
+                  <tr>
+                    <th data-sort="id">#</th>
+                    <th data-sort="rd">R&D Spend ($) <span class="sort-icon">⇅</span></th>
+                    <th data-sort="admin">Administration ($) <span class="sort-icon">⇅</span></th>
+                    <th data-sort="marketing">Marketing Spend ($) <span class="sort-icon">⇅</span></th>
+                    <th data-sort="state">State <span class="sort-icon">⇅</span></th>
+                    <th data-sort="profit">Profit ($) <span class="sort-icon">⇅</span></th>
+                  </tr>
+                </thead>
+                <tbody id="startupsTableBody">
+                  <!-- Dynamically populated via app.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
 
-        <div class="dataset-card">
-          <!-- Filter and Search Toolbar -->
-          <div class="dataset-toolbar">
-            <div class="search-box">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-              <input type="text" id="datasetSearch" placeholder="Search startup records (e.g. California, 165000)..." class="search-input">
-            </div>
-
-            <div class="filter-pills" id="stateFilterPills">
-              <button class="filter-pill active" data-state="all">All States (50)</button>
-              <button class="filter-pill" data-state="California">California (17)</button>
-              <button class="filter-pill" data-state="New York">New York (17)</button>
-              <button class="filter-pill" data-state="Florida">Florida (16)</button>
-            </div>
+        <!-- Boston Housing Explorer (506 Census Tracts) -->
+        <div class="dataset-content hidden-dataset" data-dataset="boston">
+          <div class="section-header">
+            <span class="section-tag">Urban Records</span>
+            <h2 class="section-title">Boston Housing Dataset Explorer (506 Tracts)</h2>
+            <p class="section-desc">Search, filter by waterfront status, sort by price or room count across all 506 Boston census tracts.</p>
           </div>
 
-          <!-- Dataset Statistics Summary Bar -->
-          <div class="dataset-stats-bar" id="datasetStatsBar">
-            <span>Showing <strong id="visibleCount">50</strong> of 50 Startups</span>
-            <span>Avg Profit: <strong id="avgProfitDisplay">$112,012.64</strong></span>
-            <span>Avg R&D: <strong id="avgRdDisplay">$73,721.62</strong></span>
-          </div>
+          <div class="dataset-card">
+            <div class="dataset-toolbar">
+              <div class="search-box">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="bostonDatasetSearch" placeholder="Search census tracts (e.g. rooms: 7.2, river, 35000)..." class="search-input">
+              </div>
 
-          <!-- Table -->
-          <div class="table-responsive">
-            <table class="data-table interactive-table" id="interactiveStartupsTable">
-              <thead>
-                <tr>
-                  <th data-sort="id">#</th>
-                  <th data-sort="rd">R&D Spend ($) <span class="sort-icon">⇅</span></th>
-                  <th data-sort="admin">Administration ($) <span class="sort-icon">⇅</span></th>
-                  <th data-sort="marketing">Marketing Spend ($) <span class="sort-icon">⇅</span></th>
-                  <th data-sort="state">State <span class="sort-icon">⇅</span></th>
-                  <th data-sort="profit">Profit ($) <span class="sort-icon">⇅</span></th>
-                </tr>
-              </thead>
-              <tbody id="startupsTableBody">
-                <!-- Dynamically populated via app.js -->
-              </tbody>
-            </table>
+              <div class="filter-pills" id="bostonFilterPills">
+                <button class="filter-pill active" data-filter="all">All Tracts (506)</button>
+                <button class="filter-pill" data-filter="river">🌊 Charles River (35)</button>
+                <button class="filter-pill" data-filter="inland">Inland (471)</button>
+                <button class="filter-pill" data-filter="luxury">High Value (≥ $30k)</button>
+                <button class="filter-pill" data-filter="affordable">Affordable (< $20k)</button>
+              </div>
+            </div>
+
+            <div class="dataset-stats-bar" id="bostonStatsBar">
+              <span>Showing <strong id="bostonVisibleCount">506</strong> of 506 Tracts</span>
+              <span>Avg Value: <strong id="bostonAvgPriceDisplay">$22,533 ($22.5k)</strong></span>
+              <span>Avg Rooms: <strong id="bostonAvgRoomsDisplay">6.28 rms</strong></span>
+              <span>Avg Crime: <strong id="bostonAvgCrimDisplay">3.61</strong></span>
+            </div>
+
+            <div class="table-responsive">
+              <table class="data-table interactive-table" id="interactiveBostonTable">
+                <thead>
+                  <tr>
+                    <th data-sort="id">Tract #</th>
+                    <th data-sort="rm">Rooms (RM) <span class="sort-icon">⇅</span></th>
+                    <th data-sort="lstat">% Lower Status <span class="sort-icon">⇅</span></th>
+                    <th data-sort="ptratio">Pupil/Teacher <span class="sort-icon">⇅</span></th>
+                    <th data-sort="crim">Crime Rate <span class="sort-icon">⇅</span></th>
+                    <th data-sort="tax">Tax Rate <span class="sort-icon">⇅</span></th>
+                    <th data-sort="nox">NOX ppm <span class="sort-icon">⇅</span></th>
+                    <th data-sort="chas">Waterfront <span class="sort-icon">⇅</span></th>
+                    <th data-sort="medv">Median Value (MEDV) <span class="sort-icon">⇅</span></th>
+                  </tr>
+                </thead>
+                <tbody id="bostonTableBody">
+                  <!-- Dynamically populated via app.js -->
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -924,49 +1297,54 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
   <footer class="page-footer">
     <div class="footer-container">
       <div class="footer-col brand-col">
-        <div class="footer-brand">Startup<span class="brand-accent">Regression</span></div>
+        <div class="footer-brand">Regression<span class="brand-accent">Studio</span></div>
         <p class="footer-desc">
-          Academic assignment and technical reference for 50 Startups Multiple Linear Regression and Forward Selection using the CRISP-DM framework.
+          Dual Machine Learning investigation for 50 Startups Profitability and Boston Housing Hedonic Valuation using the CRISP-DM methodology.
         </p>
         <div class="tech-tags">
           <span class="tech-tag">Python 3.11</span>
           <span class="tech-tag">Scikit-Learn</span>
           <span class="tech-tag">Pandas</span>
           <span class="tech-tag">CRISP-DM</span>
+          <span class="tech-tag">5-Fold CV</span>
         </div>
       </div>
 
       <div class="footer-col">
         <h4>Methodology</h4>
         <ul class="footer-links">
-          <li><a href="#tabPhase1">Phase 1: Business Understanding</a></li>
-          <li><a href="#tabPhase2">Phase 2: Data Understanding</a></li>
-          <li><a href="#tabPhase3">Phase 3: Data Preparation</a></li>
-          <li><a href="#tabPhase4">Phase 4: Modeling</a></li>
-          <li><a href="#tabPhase5">Phase 5: Evaluation</a></li>
-          <li><a href="#tabPhase6">Phase 6: Deployment</a></li>
+          <li><a href="#crisp-dm-section">Phase 1: Business Understanding</a></li>
+          <li><a href="#crisp-dm-section">Phase 2: Data Understanding</a></li>
+          <li><a href="#crisp-dm-section">Phase 3: Data Preparation</a></li>
+          <li><a href="#crisp-dm-section">Phase 4: Modeling (OLS)</a></li>
+          <li><a href="#crisp-dm-section">Phase 5: Evaluation & Residuals</a></li>
+          <li><a href="#crisp-dm-section">Phase 6: Deployment</a></li>
         </ul>
       </div>
 
       <div class="footer-col">
         <h4>Artifacts & Deliverables</h4>
         <ul class="footer-links">
-          <li><a href="outputs/forward_selection_results.csv" download>forward_selection_results.csv</a></li>
-          <li><a href="outputs/actual_vs_predicted_profit.png" target="_blank">actual_vs_predicted_profit.png</a></li>
+          <li><a href="outputs/forward_selection_results.csv" download>50 Startups Results (CSV)</a></li>
+          <li><a href="outputs/boston_forward_selection_results.csv" download>Boston Housing Results (CSV)</a></li>
+          <li><a href="outputs/actual_vs_predicted_profit.png" target="_blank">Startups Residual Plot (PNG)</a></li>
+          <li><a href="outputs/boston_actual_vs_predicted.png" target="_blank">Boston Housing Plot (PNG)</a></li>
           <li><a href="startup_regression.py" target="_blank">startup_regression.py</a></li>
-          <li><a href="README.md" target="_blank">README.md (Technical Report)</a></li>
+          <li><a href="boston_regression.py" target="_blank">boston_regression.py</a></li>
         </ul>
       </div>
     </div>
 
     <div class="footer-bottom">
       <div class="footer-bottom-container">
-        <span>© 2026 startup_regression Project | Pair programmed with Antigravity AI</span>
+        <span>© 2026 Regression Analytics Studio | Pair programmed with Antigravity AI</span>
         <span>Built with HTML5, Vanilla CSS3 & Vanilla JavaScript</span>
       </div>
     </div>
   </footer>
 
+  <!-- Embedded Boston Data (Zero-CORS offline execution) -->
+  <script src="boston_data.js"></script>
   <!-- Main JavaScript Application -->
   <script src="app.js"></script>
 </body>
