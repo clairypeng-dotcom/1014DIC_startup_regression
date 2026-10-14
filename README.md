@@ -1,3 +1,6 @@
+https://clairypeng-dotcom.github.io/1014DIC_startup_regression/
+
+
 # Machine Learning Regression Analytics Studio: 50 Startups & Boston Housing (CRISP-DM)
 
 A dual-domain empirical Machine Learning project implementing Multiple Linear Regression and Forward Selection under the **CRISP-DM** (Cross-Industry Standard Process for Data Mining) framework. Featuring interactive web dashboards, real-time prediction engines, 5-fold cross-validation analytics, and publication-quality diagnostic plots.
